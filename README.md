@@ -13,7 +13,7 @@ The app allows the user to create, share, comment on, and rate food recipes.
   * It shows a list of all the recipes the user has added.
 * The user can assign one or more categories to a recipe. Categories are divided into the following types:
   * **Recipe type:** appetizer, main course, or dessert
-  * **Diet:** Lactose-free, Gluten-free, or Vegan
+  * **Diet:** lactose-free, gluten-free, or vegan
 * The user can comment and rate other recipes.
   * Recipes will show user comments.
   * Recipes will show the average rating score.
