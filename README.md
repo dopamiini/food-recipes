@@ -1,6 +1,19 @@
 # Food Recipes (Recepio)
 
-The app allows the user to create, share, comment on, and rate food recipes.
+The app currently allows registered users to create, edit, and remove their own recipes. All users can view and search all recipes.
+
+## Requirements
+
+Git and Python 3.10 or newer.
+
+## Installation and Setup
+
+```bash
+git clone https://github.com/dopamiini/coffee-shop.git
+cd food-recipes
+```
+
+Initialize the database as per course instructions. Run the app via `flask run`. Once the server is running, open `http://127.0.0.1:5000` in your browser to interact with the demo app.
 
 ## Basic functional requirements:
 
