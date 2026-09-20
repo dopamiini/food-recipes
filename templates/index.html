@@ -28,6 +28,12 @@
       <p id="message" class="{{ message_type }}">{{ message }}</p>
     {% endif %}
   {% endif %}
+  <h2>Recipes</h2>
+  <ul>
+    {% for recipe in recipes %}
+    <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
+    {% endfor %}
+  </ul>
 </body>
 
 </html>

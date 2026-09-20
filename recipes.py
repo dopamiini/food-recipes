@@ -3,3 +3,24 @@ import db
 def add_recipe(user_id, title, description, ingredients, instructions):
     sql = "INSERT INTO recipes (user_id, title, description, ingredients, instructions) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [user_id, title, description, ingredients, instructions])
+
+def get_recipes():
+    sql = "SELECT id, user_id, title FROM recipes ORDER BY id DESC"
+    return db.query(sql)
+
+def get_recipe(recipe_id):
+    sql = """SELECT users.username,
+                    recipes.title,
+                    recipes.description,
+                    recipes.ingredients,
+                    recipes.instructions
+             FROM recipes, users
+             WHERE recipes.user_id = users.id AND 
+                   recipes.id = ?"""
+    
+    res = db.query(sql, [recipe_id])
+
+    if len(res) != 1:
+        return None
+
+    return res[0]
