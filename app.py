@@ -3,6 +3,7 @@ from flask import Flask, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
+import recipes
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -24,8 +25,9 @@ def create_recipe():
     ingredients = request.form["ingredients"]
     instructions = request.form["instructions"]
     user_id = session["user_id"]
-    sql = "INSERT INTO recipes (user_id, title, description, ingredients, instructions) VALUES (?, ?, ?, ?, ?)"
-    db.execute(sql, [user_id, title, description, ingredients, instructions])
+
+    recipes.add_recipe(user_id, title, description, ingredients, instructions)
+
     return redirect("/")
 
 @app.route("/register")
