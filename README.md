@@ -9,7 +9,7 @@ Git and Python 3.10 or newer.
 ## Installation and Setup
 
 ```bash
-git clone https://github.com/dopamiini/coffee-shop.git
+git clone https://github.com/dopamiini/food-recipes
 cd food-recipes
 ```
 
