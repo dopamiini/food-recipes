@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Recepio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+  <h1>Recepio</h1>
+
+  {% if session.username %}
+  <p>
+    Logged in as {{ session.username }} | 
+    <a href="/logout">Logout</a>
+  </p>
+  <hr>
+  {% else %}
+  <p>
+    <a href="/login">Sign in</a> | 
+    <a href="/register">Register</a>
+  </p>
+  <hr>
+    {% if message %}
+      <p id="message" class="{{ message_type }}">{{ message }}</p>
+    {% endif %}
+  {% endif %}
+</body>
+
+</html>
