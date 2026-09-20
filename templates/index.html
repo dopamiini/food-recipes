@@ -28,6 +28,10 @@
       <p id="message" class="{{ message_type }}">{{ message }}</p>
     {% endif %}
   {% endif %}
+  <form action="/search" method="get">
+    <input type="text" name="search">
+    <input type="submit" value="Search">
+  </form>
   <h2>Recipes</h2>
   <ul>
     {% for recipe in recipes %}
