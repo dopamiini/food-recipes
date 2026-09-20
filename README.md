@@ -11,9 +11,14 @@ Git and Python 3.10 or newer.
 ```bash
 git clone https://github.com/dopamiini/food-recipes
 cd food-recipes
+
+# Linux
+sqlite3 database.db < schema.sql
+# Windows
+Get-Content .\schema.sql | sqlite3 .\database.d
 ```
 
-Initialize the database as per course instructions. Run the app via `flask run`. Once the server is running, open `http://127.0.0.1:5000` in your browser to interact with the demo app.
+Initialize the database as above. Run the app via `flask run`. Once the server is running, open `http://127.0.0.1:5000` in your browser to interact with the demo app.
 
 ## Basic functional requirements:
 
