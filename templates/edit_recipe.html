@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Edit Recipe</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+  <h1>Recepio</h1>
+  <p><a href="/">Back</a></p>
+  <hr>
+  <h2>Edit recipe</h2>
+  <form action="/update_recipe" method="post">
+    <p>
+      Name: <br/>
+      <input type="text" name="title" value="{{ recipe.title }}"/>
+    </p>
+    <p>
+      Description: <br />
+      <textarea name="description" rows="8" cols="80">{{ recipe.description }}</textarea>
+    </p>
+    <p>
+      Ingredients: <br />
+      <textarea name="ingredients" rows="4" cols="80">{{ recipe.ingredients }}</textarea>
+    </p>
+    <p>
+      Instructions: <br />
+      <textarea name="instructions" rows="8" cols="80">{{ recipe.instructions }}</textarea>
+    </p>
+    <input type="hidden" name="recipe_id" value="{{recipe.id}}">
+    <input type="submit" value="Update" />
+  </form>
+</body>
+
+</html>

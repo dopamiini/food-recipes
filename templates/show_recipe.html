@@ -8,17 +8,25 @@
 
 <body>
   <h1>Recepio</h1>
-  <p><a href="/">Back</a></p>
+  <p>
+    <a href="/">Back</a>
+    {% if session.user_id == recipe.user_id %}
+      | <a href="/edit_recipe/{{ recipe.id }}">Edit</a>
+  {% endif %}
+  </p>
   <hr>
   <h2>{{ recipe.title }}</h2>
   <p>
-    {{recipe.description}}
+    Description: {{recipe.description}}
   </p>
   <p>
-    {{recipe.ingredients}}
+    Ingredients: {{recipe.ingredients}}
   </p>
   <p>
-    {{recipe.instructions}}
+    Instructions: {{recipe.instructions}}
+  </p>
+  <p>
+    Creator: {{ recipe.username }}
   </p>
 </body>
 
