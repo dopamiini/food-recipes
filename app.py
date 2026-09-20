@@ -52,6 +52,13 @@ def update_recipe():
 
     return redirect("/recipe/" + str(recipe_id))
 
+@app.route("/delete_recipe", methods=["POST"])
+def delete_recipe():
+    recipe_id = request.form["recipe_id"]
+    recipes.delete_recipe(recipe_id)
+
+    return redirect("/")
+
 @app.route("/register")
 def register():
     message = session.pop("message", None)

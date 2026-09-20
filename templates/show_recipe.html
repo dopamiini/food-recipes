@@ -12,6 +12,10 @@
     <a href="/">Back</a>
     {% if session.user_id == recipe.user_id %}
       | <a href="/edit_recipe/{{ recipe.id }}">Edit</a>
+    <form action="/delete_recipe" method="post" style="display: inline;">
+      <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+      <input type="submit" value="Remove">
+    </form>
   {% endif %}
   </p>
   <hr>
