@@ -1,6 +1,6 @@
 # Food Recipes (Recepio)
 
-The app currently allows registered users to create, edit, and remove their own recipes. All users can view and search all recipes.
+The app currently allows registered users to create, edit, and remove their own recipes. All users can view and search all recipes. The user can register an account and login using it.
 
 ## Requirements
 
