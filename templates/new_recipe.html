@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>New Recipe</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+  <h1>Recepio</h1>
+  <p><a href="/">Back</a></p>
+  <hr>
+  {% if message %}
+    <p id="message" class="{{ message_type }}">{{ message }}</p>
+  {% endif %}
+  <h2>New recipe</h2>
+  <form action="/create_recipe" method="post">
+    <p>
+      Name: <br/>
+      <input type="text" name="title"/>
+    </p>
+    <p>
+      Description: <br />
+      <textarea name="description" rows="8" cols="80"></textarea>
+    </p>
+    <p>
+      Ingredients: <br />
+      <textarea name="ingredients" rows="4" cols="80"></textarea>
+    </p>
+    <p>
+      Instructions: <br />
+      <textarea name="instructions" rows="8" cols="80"></textarea>
+    </p>
+    <input type="submit" value="Add" />
+  </form>
+</body>
+
+</html>

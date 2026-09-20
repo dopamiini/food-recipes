@@ -13,6 +13,21 @@ def index():
     message_type = session.pop("message_type", None)
     return render_template("index.html", message=message, message_type=message_type)
 
+@app.route("/new_recipe")
+def new_recipe():
+    return render_template("new_recipe.html")
+
+@app.route("/create_recipe", methods=["POST"])
+def create_recipe():
+    title = request.form["title"]
+    description = request.form["description"]
+    ingredients = request.form["ingredients"]
+    instructions = request.form["instructions"]
+    user_id = session["user_id"]
+    sql = "INSERT INTO recipes (user_id, title, description, ingredients, instructions) VALUES (?, ?, ?, ?, ?)"
+    db.execute(sql, [user_id, title, description, ingredients, instructions])
+    return redirect("/")
+
 @app.route("/register")
 def register():
     message = session.pop("message", None)
@@ -55,17 +70,19 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         
-        sql = "SELECT password_hash FROM users WHERE username = ?"
-        rows = db.query(sql, [username])
-
-        if len(rows) != 1:
+        sql = "SELECT id, password_hash FROM users WHERE username = ?"
+        res = db.query(sql, [username])
+        
+        if len(res) != 1:
             session["message"] = "Error: Incorrect username or password!"
             session["message_type"] = "error"
             return redirect("/login")
 
-        password_hash = rows[0]["password_hash"]
+        user_id = res[0]["id"]
+        password_hash = res[0]["password_hash"]
 
         if check_password_hash(password_hash, password):
+            session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
@@ -75,5 +92,6 @@ def login():
 
 @app.route("/logout")
 def logout():
+    del session["user_id"]
     del session["username"]
     return redirect("/")
