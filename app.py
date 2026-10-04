@@ -2,8 +2,7 @@ import sqlite3
 from flask import Flask, abort, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
-import db
-import recipes
+import db, recipes, users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -87,6 +86,16 @@ def create():
     session["message"] = "Account created successfully!"
     session["message_type"] = "success"
     return redirect("/")
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+
+    if not user:
+        abort(404)
+
+    recipes = users.get_recipes(user_id)
+    return render_template("show_user.html", user=user, recipes=recipes)
 
 @app.route("/new_recipe")
 def new_recipe():

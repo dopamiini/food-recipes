@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>User {{ user.username }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+  <h1>Recepio</h1>
+  <p>
+    <a href="/">Back</a>
+  </p>
+  <hr>
+  <h2>User {{ user.username }}</h2>
+  <p>
+    User has {{ recipes | count }} recipes.
+  </p>
+  <h2>Recipes</h2>
+  <ul>
+    {% for recipe in recipes %}
+    <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>
