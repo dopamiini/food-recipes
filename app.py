@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, abort, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db
@@ -62,6 +62,10 @@ def create_recipe():
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
+    if recipe is None:
+        abort(404)
+    if recipe["user_id"] != session.get("user_id"):
+        abort(403)
     return render_template("edit_recipe.html", recipe=recipe)
 
 @app.route("/update_recipe", methods=["POST"])
@@ -71,14 +75,24 @@ def update_recipe():
     description = request.form["description"]
     ingredients = request.form["ingredients"]
     instructions = request.form["instructions"]
+    recipe = recipes.get_recipe(recipe_id)
+    if recipe is None:
+        abort(404)
+    if recipe["user_id"] != session.get("user_id"):
+        abort(403)
     recipes.update_recipe(recipe_id, title, description, ingredients, instructions)
 
     return redirect("/recipe/" + str(recipe_id))
 
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def remove_recipe(recipe_id):
+    recipe = recipes.get_recipe(recipe_id)
+    if recipe is None:
+        abort(404)
+    if recipe["user_id"] != session.get("user_id"):
+        abort(403)
+
     if request.method == "GET":
-        recipe = recipes.get_recipe(recipe_id)
         return render_template("remove_recipe.html", recipe=recipe)
 
     if request.method == "POST":
