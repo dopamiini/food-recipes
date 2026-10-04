@@ -52,8 +52,8 @@ The app can be tested manually by following the checklists below or doing someth
 * The user can view all recipes listed on the app. ✅
 * The user can search for recipes using keywords and optionally filter recipes by category. ✅
 * The app has a user page that shows information about the user and their added recipes.
-  * It shows the number of recipes the user has added. ❌
-  * It shows a list of all the recipes the user has added. ❌
+  * It shows the number of recipes the user has added. ✅
+  * It shows a list of all the recipes the user has added. ✅
 * The user can assign one or more categories to a recipe. Categories are divided into the following types: 
   * **Recipe type:** appetizer, main course, or dessert ❌
   * **Diet:** lactose-free, gluten-free, or vegan ❌
