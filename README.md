@@ -19,7 +19,7 @@ cd food-recipes
 
 Run the app via `flask run`. Once the server is running, open `http://127.0.0.1:5000` in your browser to interact with the demo app.
 
-## Recent updates
+## Recent updates ✓
 
 All the current requirements for the milestone and previous milestones should be met.
 
@@ -27,7 +27,7 @@ All the current requirements for the milestone and previous milestones should be
 * Added input validation before storing data in the database.
 * Added user profile pages with statistics and the user's recipes.
 * Added two database-backed categories to recipes.
-* Added comments so logged in users can provide additional information on other users' recipes.
+* Added comments so logged in users can provide comments on other users' recipes.
 
 ## Basic functional requirements:
 
