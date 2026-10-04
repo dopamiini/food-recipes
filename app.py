@@ -1,13 +1,17 @@
 import sqlite3
 from flask import Flask, abort, redirect, render_template, request, session
 import config
-import db, recipes, users
+import db, recipes, secrets, users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 def require_login():
     if "user_id" not in session:
+        abort(403)
+
+def check_csrf():
+    if request.form.get("csrf_token") != session.get("csrf_token"):
         abort(403)
 
 @app.route("/")
@@ -32,6 +36,7 @@ def login():
         if user:
             session["user_id"] = user["id"]
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
 
         session["message"] = "Error: Incorrect username or password!"
@@ -92,6 +97,7 @@ def new_recipe():
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
     require_login()
+    check_csrf()
 
     title = request.form["title"]
     if len(title) > 50:
@@ -126,6 +132,7 @@ def create_recipe():
 @app.route("/create_comment", methods=["POST"])
 def create_comment():
     require_login()
+    check_csrf()
 
     recipe_id = request.form["recipe_id"]
     user_id = session["user_id"]
@@ -181,6 +188,7 @@ def edit_recipe(recipe_id):
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
     require_login()
+    check_csrf()
 
     recipe_id = request.form["recipe_id"]
     title = request.form["title"]
@@ -236,6 +244,8 @@ def remove_recipe(recipe_id):
         return render_template("remove_recipe.html", recipe=recipe)
 
     if request.method == "POST":
+        check_csrf()
+        
         if "remove" in request.form:
             recipes.remove_recipe(recipe_id)
             return redirect("/")

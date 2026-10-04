@@ -43,6 +43,7 @@
   {% if session.user_id %}
     <h2>Rate the recipe</h2>
     <form action="/create_rating" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
       <select name="rating">
         <option value="1">1 star</option>
@@ -58,6 +59,7 @@
       <textarea name="comment" rows="4" cols="60" required></textarea>
       <br>
       <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="submit" value="Add comment">
     </form>
   {% endif %}
