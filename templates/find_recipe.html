@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Find recipe</title>
+</head>
+
+<body>
+  <h1>Recepio</h1>
+  <p><a href="/">Back</a></p>
+  <hr>
+  <h2>Find recipe</h2>
+  <form action="/find_recipe" method="GET">
+    <p>
+      Keyword: <input type="text" name="query" value="{{ query }}">
+    </p>
+    <input type="submit" value="Send">
+  </form>
+  {% if query %}
+  <h2>Results</h2>
+  <ul>
+    {% for recipe in results %}
+    <li><a href="/recipe/{{ recipe_id }}">{{ recipe.title }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</body>
+
+</html>

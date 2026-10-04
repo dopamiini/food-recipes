@@ -15,6 +15,7 @@ def index():
     all_recipes = recipes.get_recipes()
     return render_template("index.html", message=message, message_type=message_type, recipes=all_recipes)
 
+"""
 @app.route("/search")
 def search():
     search = request.args.get("search", "")
@@ -24,11 +25,18 @@ def search():
     else:
         all_recipes = recipes.get_recipes()
 
-    return render_template(
-        "index.html",
-        recipes=all_recipes,
-        search=search
-    )
+    return render_template("index.html", recipes=all_recipes, search=search)
+"""
+
+@app.route("/find_recipe")
+def find_recipe():
+    query = request.args.get("query")
+    if query:
+        results = recipes.find_recipes(query)
+    else:
+        query = ""
+        results = []
+    return render_template("find_recipe.html", query=query, results=results)
 
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
@@ -66,15 +74,6 @@ def update_recipe():
     recipes.update_recipe(recipe_id, title, description, ingredients, instructions)
 
     return redirect("/recipe/" + str(recipe_id))
-
-"""
-@app.route("/delete_recipe", methods=["POST"])
-def delete_recipe():
-    recipe_id = request.form["recipe_id"]
-    recipes.delete_recipe(recipe_id)
-
-    return redirect("/")
-"""
 
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def remove_recipe(recipe_id):

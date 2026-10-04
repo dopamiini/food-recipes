@@ -7,31 +7,24 @@
 </head>
 
 <body>
-  <h1>Recepio</h1>
-
-  {% if session.username %}
+  <h1><span>R</span>ecepio</h1>
   <p>
-    Logged in as {{ session.username }} | 
-    <a href="/logout">Logout</a>
-  </p>
-  <hr>
-  <p>
-    <a href="/new_recipe">Add recipe</a>
-  </p>
-  {% else %}
-  <p>
-    <a href="/login">Sign in</a> | 
-    <a href="/register">Register</a>
-  </p>
-  <hr>
-    {% if message %}
-      <p id="message" class="{{ message_type }}">{{ message }}</p>
+    {% if session.username %}
+      Logged in as {{ session.username }} |
+      <a href="/new_recipe">Add recipe</a> |
+    {% else %}
+      <a href="/login">Sign in</a> |
+      <a href="/register">Register</a> |
     {% endif %}
+    <a href="/find_recipe">Find recipe</a>
+    {% if session.username %}
+      <a href="/logout"> | Logout</a>
+    {% endif %}
+  </p>
+  <hr>
+  {% if message %}
+    <p id="message" class="{{ message_type }}">{{ message }}</p>
   {% endif %}
-  <form action="/search" method="get">
-    <input type="text" name="search">
-    <input type="submit" value="Search">
-  </form>
   <h2>Recipes</h2>
   <ul>
     {% for recipe in recipes %}
