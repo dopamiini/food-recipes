@@ -72,3 +72,24 @@ def find_recipes(query):
              WHERE title LIKE ? OR description LIKE ?
              ORDER BY id DESC"""
     return db.query(sql, ["%" + query + "%", "%" + query + "%"])
+
+def get_rating(recipe_id):
+    query = """SELECT AVG(rating) AS average_rating,
+               COUNT(rating) AS rating_count
+               FROM ratings
+               WHERE recipe_id = ?"""
+
+    return db.execute(query, (recipe_id,)).fetchone()
+
+def add_comment(recipe_id, user_id, comment):
+    sql = """INSERT INTO comments (recipe_id, user_id, comment)
+             VALUES (?, ?, ?)"""
+    db.execute(sql, [recipe_id, user_id, comment])
+
+def get_comments(recipe_id):
+    sql = """SELECT comments.comment, users.username
+             FROM comments
+             JOIN users ON comments.user_id = users.id
+             WHERE comments.recipe_id = ?
+             ORDER BY comments.id DESC"""
+    return db.query(sql, [recipe_id])

@@ -26,3 +26,18 @@ CREATE TABLE categories (
     category TEXT,
     value
 );
+
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY,
+    recipe_id INTEGER NOT NULL REFERENCES recipes(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    comment TEXT NOT NULL
+);
+
+CREATE TABLE ratings (
+    id INTEGER PRIMARY KEY,
+    recipe_id INTEGER NOT NULL REFERENCES recipes(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    rating INTEGER NOT NULL,
+    UNIQUE(recipe_id, user_id)
+);

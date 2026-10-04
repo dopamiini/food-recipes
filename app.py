@@ -123,6 +123,18 @@ def create_recipe():
 
     return redirect("/")
 
+@app.route("/create_comment", methods=["POST"])
+def create_comment():
+    require_login()
+
+    recipe_id = request.form["recipe_id"]
+    user_id = session["user_id"]
+    comment = request.form["comment"]
+
+    recipes.add_comment(recipe_id, user_id, comment)
+
+    return redirect("/recipe/" + recipe_id)
+
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query")
@@ -141,8 +153,9 @@ def show_recipe(recipe_id):
         abort(404)
 
     categories = recipes.get_categories(recipe_id)
+    comments = recipes.get_comments(recipe_id)
 
-    return render_template("show_recipe.html", recipe=recipe, categories=categories)
+    return render_template("show_recipe.html", recipe=recipe, categories=categories, comments=comments)
 
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):

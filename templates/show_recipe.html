@@ -17,6 +17,7 @@
   </p>
   <hr>
   <h2>{{ recipe.title }}</h2>
+  <p>Average rating: X / 5</p>
   <p>
     Description: {{recipe.description}}
   </p>
@@ -39,6 +40,34 @@
     </ul>
   </p>
   {% endif %}
+  {% if session.user_id %}
+    <h2>Rate the recipe</h2>
+    <form action="/create_rating" method="POST">
+      <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+      <select name="rating">
+        <option value="1">1 star</option>
+        <option value="2">2 stars</option>
+        <option value="3">3 stars</option>
+        <option value="4">4 stars</option>
+        <option value="5">5 stars</option>
+      </select>
+      <input type="submit" value="Rate">
+    </form>
+    <h2>Leave a comment</h2>
+    <form action="/create_comment" method="POST">
+      <textarea name="comment" rows="4" cols="60" required></textarea>
+      <br>
+      <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+      <input type="submit" value="Add comment">
+    </form>
+  {% endif %}
+  <h2>Comments</h2>
+  {% for comment in comments %}
+    <p>
+      <strong>{{ comment.username }}</strong>
+      {{ comment.comment }}
+    </p>
+  {% endfor %}
 </body>
 
 </html>
