@@ -29,6 +29,21 @@
       <textarea name="instructions" rows="8" cols="80" maxlength="1000">{{ recipe.instructions }}</textarea>
     </p>
     <input type="hidden" name="recipe_id" value="{{recipe.id}}">
+    {% for group in all_categories %}
+    <p>
+      {{ group }}: <br>
+      <select name="categories">
+        <option value="">Choose a category</option>
+      {% for option in all_categories[group] %}
+        {% if categories[group] == option %}
+          <option value="{{ group }}:{{ option }}" selected>{{ option }}</option>
+        {% else %}
+          <option value="{{ group }}:{{ option }}">{{ option }}</option>
+        {% endif %}
+      {% endfor %}
+      </select>
+    </p>
+    {% endfor %}
     <input type="submit" value="Update" />
   </form>
 </body>

@@ -44,7 +44,7 @@ def get_recipe(recipe_id):
     res = db.query(sql, [recipe_id])
     return res[0] if res else None
 
-def update_recipe(recipe_id, title, description, ingredients, instructions):
+def update_recipe(recipe_id, title, description, ingredients, instructions, categories):
     sql = """UPDATE recipes
              SET title = ?,
                  description = ?,
@@ -52,6 +52,13 @@ def update_recipe(recipe_id, title, description, ingredients, instructions):
                  instructions = ?
              WHERE id = ?"""
     db.execute(sql, [title, description, ingredients, instructions, recipe_id])
+
+    sql = "DELETE FROM recipe_categories WHERE recipe_id = ?"
+    db.execute(sql, [recipe_id])
+
+    sql = "INSERT INTO recipe_categories (recipe_id, category, value) VALUES (?, ?, ?)"
+    for category, value in categories:
+        db.execute(sql, [recipe_id, category, value])
 
 def remove_recipe(recipe_id):
     sql = "DELETE FROM recipes WHERE id = ?"

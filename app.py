@@ -150,7 +150,14 @@ def edit_recipe(recipe_id):
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
 
-    return render_template("edit_recipe.html", recipe=recipe)
+    all_categories = recipes.get_all_categories()
+    categories = {}
+    for group in all_categories:
+        categories[group] = ""
+    for entry in recipes.get_categories(recipe_id):
+        categories[entry["category"]] = entry ["value"]
+
+    return render_template("edit_recipe.html", recipe=recipe, categories=categories, all_categories=all_categories)
 
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
@@ -177,8 +184,14 @@ def update_recipe():
     
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
-    
-    recipes.update_recipe(recipe_id, title, description, ingredients, instructions)
+
+    categories= []
+    for entry in request.form.getlist("categories"):
+        if entry:
+            parts = entry.split(":")
+            categories.append((parts[0], parts[1]))
+
+    recipes.update_recipe(recipe_id, title, description, ingredients, instructions, categories)
 
     return redirect("/recipe/" + str(recipe_id))
 
