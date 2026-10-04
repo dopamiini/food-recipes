@@ -15,19 +15,6 @@ def index():
     all_recipes = recipes.get_recipes()
     return render_template("index.html", message=message, message_type=message_type, recipes=all_recipes)
 
-"""
-@app.route("/search")
-def search():
-    search = request.args.get("search", "")
-
-    if search:
-        all_recipes = recipes.search_recipes(search)
-    else:
-        all_recipes = recipes.get_recipes()
-
-    return render_template("index.html", recipes=all_recipes, search=search)
-"""
-
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query")
@@ -41,6 +28,10 @@ def find_recipe():
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
+
+    if not recipe:
+        abort(404)
+    
     return render_template("show_recipe.html", recipe=recipe)
 
 @app.route("/new_recipe")
@@ -62,10 +53,13 @@ def create_recipe():
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
-    if recipe is None:
+
+    if not recipe:
         abort(404)
+
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
+
     return render_template("edit_recipe.html", recipe=recipe)
 
 @app.route("/update_recipe", methods=["POST"])
@@ -75,11 +69,15 @@ def update_recipe():
     description = request.form["description"]
     ingredients = request.form["ingredients"]
     instructions = request.form["instructions"]
+
     recipe = recipes.get_recipe(recipe_id)
-    if recipe is None:
+    
+    if not recipe:
         abort(404)
+    
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
+    
     recipes.update_recipe(recipe_id, title, description, ingredients, instructions)
 
     return redirect("/recipe/" + str(recipe_id))
@@ -87,8 +85,10 @@ def update_recipe():
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def remove_recipe(recipe_id):
     recipe = recipes.get_recipe(recipe_id)
-    if recipe is None:
+
+    if not recipe:
         abort(404)
+
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
 
