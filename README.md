@@ -14,7 +14,7 @@ cd food-recipes
 
 # Initialize the database as follows:
 # sqlite3 database.db < schema.sql (Linux)
-# Get-Content .\schema.sql | sqlite3 .\database.d (Windows)
+# Get-Content .\schema.sql | sqlite3 .\database.db (Windows)
 ```
 
 Run the app via `flask run`. Once the server is running, open `http://127.0.0.1:5000` in your browser to interact with the demo app.
