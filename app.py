@@ -1,6 +1,5 @@
 import sqlite3
 from flask import Flask, abort, redirect, render_template, request, session
-from werkzeug.security import check_password_hash, generate_password_hash
 import config
 import db, recipes, users
 
@@ -24,30 +23,20 @@ def login():
         message = session.pop("message", None)
         message_type = session.pop("message_type", None)
         return render_template("login.html", message=message, message_type=message_type)
-
-    if request.method == "POST":
+    else:
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT id, password_hash FROM users WHERE username = ?"
-        res = db.query(sql, [username])
+        user = users.check_login(username, password)
 
-        if len(res) != 1:
-            session["message"] = "Error: Incorrect username or password!"
-            session["message_type"] = "error"
-            return redirect("/login")
-        
-        user_id = res[0]["id"]
-        password_hash = res[0]["password_hash"]
-
-        if check_password_hash(password_hash, password):
-            session["user_id"] = user_id
+        if user:
+            session["user_id"] = user["id"]
             session["username"] = username
             return redirect("/")
-        else:
-            session["message"] = "Error: Incorrect username or password!"
-            session["message_type"] = "error"
-            return redirect("/login")
+
+        session["message"] = "Error: Incorrect username or password!"
+        session["message_type"] = "error"
+        return redirect("/login")
 
 @app.route("/logout")
 def logout():
@@ -73,11 +62,8 @@ def create():
         session["message_type"] = "error"
         return redirect("/register")
 
-    password_hash = generate_password_hash(password1)
-
     try:
-        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
+        users.create_user(username, password1)
     except sqlite3.IntegrityError:
         session["message"] = "Error: Username already taken!"
         session["message_type"] = "error"
