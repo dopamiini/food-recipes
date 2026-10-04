@@ -1,5 +1,17 @@
 import db
 
+def get_all_categories():
+    sql = "SELECT category, value FROM categories ORDER BY id"
+    res = db.query(sql)
+
+    categories = {}
+    for category, value in res:
+        categories[category] = []
+    for category, value in res:
+        categories[category].append(value)
+
+    return categories
+
 def add_recipe(user_id, title, description, ingredients, instructions, categories):
     sql = "INSERT INTO recipes (user_id, title, description, ingredients, instructions) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [user_id, title, description, ingredients, instructions])

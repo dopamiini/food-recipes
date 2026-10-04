@@ -86,7 +86,8 @@ def show_user(user_id):
 @app.route("/new_recipe")
 def new_recipe():
     require_login()
-    return render_template("new_recipe.html")
+    categories = recipes.get_all_categories()
+    return render_template("new_recipe.html", categories=categories)
 
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
@@ -106,14 +107,12 @@ def create_recipe():
         abort(400)
     user_id = session["user_id"]
 
-    categories = []
-    type = request.form["recipe_type"]
-    if type:
-        categories.append(("Type", type))
-    diet = request.form["diet"]
-    if diet:
-        categories.append(("Diet", diet))
-
+    categories= []
+    for entry in request.form.getlist("categories"):
+        if entry:
+            parts = entry.split(":")
+            categories.append((parts[0], parts[1]))
+    
     recipes.add_recipe(user_id, title, description, ingredients, instructions, categories)
 
     return redirect("/")
@@ -136,7 +135,7 @@ def show_recipe(recipe_id):
         abort(404)
 
     categories = recipes.get_categories(recipe_id)
-    
+
     return render_template("show_recipe.html", recipe=recipe, categories=categories)
 
 @app.route("/edit_recipe/<int:recipe_id>")

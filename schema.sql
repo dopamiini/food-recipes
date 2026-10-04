@@ -20,3 +20,9 @@ CREATE TABLE recipe_categories (
     category TEXT,
     value TEXT
 );
+
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY,
+    category TEXT,
+    value
+);
