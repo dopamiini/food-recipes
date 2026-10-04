@@ -106,7 +106,15 @@ def create_recipe():
         abort(400)
     user_id = session["user_id"]
 
-    recipes.add_recipe(user_id, title, description, ingredients, instructions)
+    categories = []
+    type = request.form["recipe_type"]
+    if type:
+        categories.append(("Type", type))
+    diet = request.form["diet"]
+    if diet:
+        categories.append(("Diet", diet))
+
+    recipes.add_recipe(user_id, title, description, ingredients, instructions, categories)
 
     return redirect("/")
 
@@ -126,8 +134,10 @@ def show_recipe(recipe_id):
 
     if not recipe:
         abort(404)
+
+    categories = recipes.get_categories(recipe_id)
     
-    return render_template("show_recipe.html", recipe=recipe)
+    return render_template("show_recipe.html", recipe=recipe, categories=categories)
 
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):

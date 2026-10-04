@@ -13,3 +13,10 @@ CREATE TABLE recipes (
     instructions TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE recipe_categories (
+    id INTEGER PRIMARY KEY,
+    recipe_id INTEGER REFERENCES recipes,
+    category TEXT,
+    value TEXT
+);

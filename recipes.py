@@ -1,8 +1,18 @@
 import db
 
-def add_recipe(user_id, title, description, ingredients, instructions):
+def add_recipe(user_id, title, description, ingredients, instructions, categories):
     sql = "INSERT INTO recipes (user_id, title, description, ingredients, instructions) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [user_id, title, description, ingredients, instructions])
+
+    recipe_id = db.last_insert_id()
+
+    sql = "INSERT INTO recipe_categories (recipe_id, category, value) VALUES (?, ?, ?)"
+    for category, value in categories:
+        db.execute(sql, [recipe_id, category, value])
+
+def get_categories(recipe_id):
+    sql = "SELECT category, value FROM recipe_categories WHERE recipe_id = ?"
+    return db.query(sql, [recipe_id])
 
 def get_recipes():
     sql = "SELECT id, user_id, title FROM recipes ORDER BY id DESC"

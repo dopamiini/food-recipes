@@ -29,6 +29,16 @@
   <p>
     Creator: <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>
   </p>
+  {% if categories %}
+  <p>
+    Categories:
+    <ul>
+      {% for group in categories %}
+      <li>{{ group.category }}: {{ group.value }}</li>
+      {% endfor %}
+    </ul>
+  </p>
+  {% endif %}
 </body>
 
 </html>

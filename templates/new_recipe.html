@@ -33,6 +33,25 @@
       Instructions: <br>
       <textarea name="instructions" rows="8" cols="80" maxlength="1000"></textarea>
     </p>
+    <p>
+      <label for="recipe_type">Recipe type:</label>
+      <select name="recipe_type" required>
+        <option value="" disabled selected>Choose a recipe type</option>
+        <option value="Appetizer">Appetizer</option>
+        <option value="Main course">Main course</option>
+        <option value="Dessert">Dessert</option>
+      </select>
+    </p>
+     <p>
+      <label for="diet">Diet:</label>
+      <select name="diet" id="diet" required>
+        <option value="" disabled selected>Choose a diet</option>
+        <option value="none">None</option>
+        <option value="Vegan">Vegan</option>
+        <option value="Gluten-free">Gluten-free</option>
+        <option value="Lactose-free">Lactose-free</option>
+      </select>
+    </p>
     <input type="submit" value="Add">
   </form>
 </body>
