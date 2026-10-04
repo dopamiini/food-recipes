@@ -107,10 +107,16 @@ def create_recipe():
         abort(400)
     user_id = session["user_id"]
 
+    all_categories = recipes.get_all_categories()
+
     categories= []
     for entry in request.form.getlist("categories"):
         if entry:
             parts = entry.split(":")
+            if parts[0] not in all_categories:
+                abort(403)
+            if parts[1] not in all_categories[parts[0]]:
+                abort(403)
             categories.append((parts[0], parts[1]))
     
     recipes.add_recipe(user_id, title, description, ingredients, instructions, categories)
@@ -185,10 +191,16 @@ def update_recipe():
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
 
+    all_categories = recipes.get_all_categories()
+
     categories= []
     for entry in request.form.getlist("categories"):
         if entry:
             parts = entry.split(":")
+            if parts[0] not in all_categories:
+                abort(403)
+            if parts[1] not in all_categories[parts[0]]:
+                abort(403)
             categories.append((parts[0], parts[1]))
 
     recipes.update_recipe(recipe_id, title, description, ingredients, instructions, categories)
