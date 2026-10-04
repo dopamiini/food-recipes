@@ -31,9 +31,9 @@ The app can be tested manually by following the checklists below or doing someth
 
 2. Testing logging in functionality.
    * Open the login page by clicking 'Sign in'. ✅
-   * Attempt login using a registered username and incorrect password. This should fail and an error message is displayed. ✅
+   * Attempt login using registered username and incorrect password. Should fail and an error message is displayed. ✅
    * Attempt login with a random username that doesn't exist. Verify this fails and an error message is displayed. ✅
-   * Try login using a registered username and correct password. This should succeed and you are redirected to the main page. ✅
+   * Try login using a registered username and correct password. Should succeed with redirected to the main page. ✅
    * Check if log out works and then login again. ✅
 
 3. Testing recipe functionality. Note that you need a registered account and must be logged in.
@@ -55,10 +55,10 @@ The app can be tested manually by following the checklists below or doing someth
   * It shows the number of recipes the user has added. ✅
   * It shows a list of all the recipes the user has added. ✅
 * The user can assign one or more categories to a recipe. Categories are divided into the following types: 
-  * **Recipe type:** appetizer, main course, or dessert ❌
-  * **Diet:** lactose-free, gluten-free, or vegan ❌
+  * **Recipe type:** appetizer, main course, or dessert ✅
+  * **Diet:** lactose-free, gluten-free, or vegan ✅
 * The user can comment and rate other recipes.
-  * Recipes will show user comments. ❌
+  * Recipes will show user comments. ✅
   * Recipes will show the average rating score. ❌
 
 ## Additional functionalities:
