@@ -142,6 +142,37 @@ def create_comment():
 
     return redirect("/recipe/" + recipe_id)
 
+
+@app.route("/create_rating", methods=["POST"])
+def create_rating():
+    if not session.get("user_id"):
+        abort(403)
+
+    recipe_id = request.form.get("recipe_id", type=int)
+    rating = request.form.get("rating", type=int)
+
+    if recipe_id is None or rating is None:
+        abort(400)
+
+    if not 1 <= rating <= 5:
+        abort(400)
+
+    recipe = recipes.get_recipe(recipe_id)
+    if not recipe:
+        abort(404)
+
+    user_id = session["user_id"]
+
+    # A user may only rate a recipe once.
+    existing_rating = recipes.get_user_rating(recipe_id, user_id)
+    if existing_rating:
+        abort(409, description="You have already rated this recipe.")
+
+    recipes.add_rating(recipe_id, user_id, rating)
+
+    return redirect("/recipe/" + str(recipe_id))
+
+
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query")
@@ -151,6 +182,7 @@ def find_recipe():
         query = ""
         results = []
     return render_template("find_recipe.html", query=query, results=results)
+
 
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
@@ -162,7 +194,26 @@ def show_recipe(recipe_id):
     categories = recipes.get_categories(recipe_id)
     comments = recipes.get_comments(recipe_id)
 
-    return render_template("show_recipe.html", recipe=recipe, categories=categories, comments=comments)
+    ratings = recipes.get_ratings(recipe_id)
+    average_rating, rating_count = recipes.get_rating(recipe_id)
+
+    user_rating = None
+    if session.get("user_id"):
+        user_rating = recipes.get_user_rating(
+            recipe_id, session["user_id"]
+        )
+
+    return render_template(
+        "show_recipe.html",
+        recipe=recipe,
+        categories=categories,
+        comments=comments,
+        ratings=ratings,
+        average_rating=average_rating,
+        rating_count=rating_count,
+        user_rating=user_rating
+    )
+
 
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):
@@ -228,6 +279,7 @@ def update_recipe():
 
     return redirect("/recipe/" + str(recipe_id))
 
+
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def remove_recipe(recipe_id):
     require_login()
@@ -251,3 +303,92 @@ def remove_recipe(recipe_id):
             return redirect("/")
         else:
             return redirect("/recipe/" + str(recipe_id))
+
+
+@app.route("/edit_rating", methods=["POST"])
+def edit_rating():
+    if not session.get("user_id"):
+        abort(403)
+
+    rating_id = request.form.get("rating_id", type=int)
+    rating = request.form.get("rating", type=int)
+
+    if rating_id is None or rating is None:
+        abort(400)
+
+    if not 1 <= rating <= 5:
+        abort(400)
+
+    user_id = session["user_id"]
+
+    # Find the rating before editing it
+    existing_rating = recipes.get_rating_by_id(rating_id)
+
+    if not existing_rating:
+        abort(404)
+
+    # Only the owner can edit the rating
+    if existing_rating[1] != user_id:
+        abort(403)
+
+    recipe_id = existing_rating[0]
+
+    recipes.update_rating(rating_id, user_id, rating)
+
+    return redirect("/recipe/" + str(recipe_id))
+
+
+@app.route("/remove_rating", methods=["POST"])
+def remove_rating():
+    if not session.get("user_id"):
+        abort(403)
+
+    rating_id = request.form.get("rating_id", type=int)
+
+    if rating_id is None:
+        abort(400)
+
+    user_id = session["user_id"]
+
+    # Find the rating before removing it
+    existing_rating = recipes.get_rating_by_id(rating_id)
+
+    if not existing_rating:
+        abort(404)
+
+    # Only the owner can remove the rating
+    if existing_rating[1] != user_id:
+        abort(403)
+
+    recipe_id = existing_rating[0]
+
+    recipes.remove_rating(rating_id, user_id)
+
+    return redirect("/recipe/" + str(recipe_id))
+
+
+@app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
+def remove_comment(comment_id):
+    require_login()
+
+    comment = recipes.get_comment_by_id(comment_id)
+
+    if not comment:
+        abort(404)
+
+    if comment["user_id"] != session.get("user_id"):
+        abort(403)
+
+    if request.method == "GET":
+        return render_template("remove_comment.html", comment=comment)
+
+    if request.method == "POST":
+        check_csrf()
+
+        if "remove" in request.form:
+            recipes.remove_comment(comment_id, session["user_id"])
+            print("Redirecting to:", "/recipe/" + str(comment["recipe_id"]))
+            return redirect("/recipe/" + str(comment["recipe_id"]))
+        else:
+            print("Redirecting to:", "/recipe/" + str(comment["recipe_id"]))
+            return redirect("/recipe/" + str(comment["recipe_id"]))
