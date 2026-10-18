@@ -86,8 +86,8 @@ Note that the requirements may be updated during the project, but none of the ma
 
 ## Testing
 
+Testing documentation and test cases can be found in the file [testing.md](documents/testing.md).
+
 ## Pylint
 
-Pylint report is in the file pylint-report.md
-
-Testing documentation and test cases can be found [here](documents/testing.md).
+Pylint report is in the file [pylint-report.md](documents/pylint-report.md)
