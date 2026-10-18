@@ -11,7 +11,7 @@
   <nav>
     <p>
       {% if session.username %}
-        Logged in as {{ session.username }} |
+        Logged in as <a href="/user/{{ session.user_id }}">{{ session.username }}</a> |
         <a href="/new_recipe">Add recipe</a> |
       {% else %}
         <a href="/login">Sign in</a> |

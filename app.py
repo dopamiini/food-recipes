@@ -7,6 +7,9 @@ app = Flask(__name__)
 app.secret_key = config.secret_key
 
 
+MAX_IMAGE_SIZE = 5 * 1024 * 1024
+
+
 def require_login():
     if "user_id" not in session:
         abort(403)
@@ -22,6 +25,16 @@ def get_flash_messages():
     message_type = session.pop("message_type", None)
 
     return message, message_type
+
+
+def is_valid_png(data):
+    if not data or len(data) > MAX_IMAGE_SIZE:
+        return False
+
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        return False
+
+    return True
 
 
 def validate_recipe_form():
@@ -141,6 +154,8 @@ def show_recipe(recipe_id):
             recipe_id, session["user_id"]
         )
 
+    has_image = recipes.get_image(recipe_id) is not None
+
     return render_template(
         "show_recipe.html",
         recipe=recipe,
@@ -152,6 +167,7 @@ def show_recipe(recipe_id):
         user_rating=user_rating,
         message=message,
         message_type=message_type,
+        has_image=has_image,
     )
 
 
@@ -486,11 +502,11 @@ def create_comment():
     if len(comment) > 200:
         session["message"] = "Comments must be at most 200 characters."
         session["message_type"] = "error"
-        return redirect("/recipe/" + recipe_id)
+        return redirect("/recipe/" + str(recipe_id))
 
     recipes.add_comment(recipe_id, user_id, comment)
 
-    return redirect("/recipe/" + recipe_id)
+    return redirect("/recipe/" + str(recipe_id))
 
 
 @app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
@@ -618,3 +634,47 @@ def remove_rating():
     recipes.remove_rating(rating_id, user_id)
 
     return redirect("/recipe/" + str(recipe_id))
+
+
+@app.route("/upload_image/<int:recipe_id>", methods=["POST"])
+def upload_image(recipe_id):
+    require_login()
+    check_csrf()
+
+    recipe = recipes.get_recipe(recipe_id)
+    if not recipe:
+        abort(404)
+
+    if recipe["user_id"] != session["user_id"]:
+        abort(403)
+
+    uploaded_file = request.files.get("image")
+
+    if uploaded_file is None or not uploaded_file.filename:
+        session["message"] = "Please select a PNG image."
+        session["message_type"] = "error"
+        return redirect("/recipe/" + str(recipe_id))
+
+    image_data = uploaded_file.stream.read(MAX_IMAGE_SIZE + 1)
+
+    if not is_valid_png(image_data):
+        session["message"] = "Invalid PNG image or image exceeds 5 MB."
+        session["message_type"] = "error"
+        return redirect("/recipe/" + str(recipe_id))
+
+    recipes.save_image(recipe_id, image_data)
+
+    session["message"] = "Image uploaded successfully!"
+    session["message_type"] = "success"
+
+    return redirect("/recipe/" + str(recipe_id))
+
+
+@app.route("/recipe_image/<int:recipe_id>")
+def recipe_image(recipe_id):
+    image = recipes.get_image(recipe_id)
+
+    if image is None:
+        abort(404)
+
+    return image, 200, {"Content-Type": "image/png"}

@@ -45,3 +45,9 @@ CREATE TABLE IF NOT EXISTS ratings (
     FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS images (
+    recipe_id INTEGER PRIMARY KEY,
+    image BLOB NOT NULL,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
+);

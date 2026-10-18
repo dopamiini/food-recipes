@@ -156,3 +156,33 @@ def get_rating_by_id(rating_id):
              WHERE id = ?"""
     res = db.query(sql, [rating_id])
     return res[0] if res else None
+
+
+def add_image(recipe_id, image):
+    sql = "INSERT INTO images (recipe_id, image) VALUES (?, ?)"
+    db.execute(sql, [recipe_id, image])
+
+
+def get_image(recipe_id):
+    sql = "SELECT image FROM images WHERE recipe_id = ?"
+    result = db.query(sql, [recipe_id])
+    return result[0]["image"] if result else None
+
+
+def update_image(recipe_id, image):
+    sql = "UPDATE images SET image = ? WHERE recipe_id = ?"
+    db.execute(sql, [image, recipe_id])
+
+
+def save_image(recipe_id, image):
+    sql = """
+        INSERT INTO images (recipe_id, image)
+        VALUES (?, ?)
+        ON CONFLICT(recipe_id)
+        DO UPDATE SET image = excluded.image"""
+    db.execute(sql, [recipe_id, image])
+
+
+def remove_image(recipe_id):
+    sql = "DELETE FROM images WHERE recipe_id = ?"
+    db.execute(sql, [recipe_id])

@@ -25,6 +25,51 @@
 
   <h2>{{ recipe.title }}</h2>
 
+  <!-- Recipe image or default placeholder -->
+  <div class="recipe-image-container">
+    {% if has_image %}
+      <img
+        src="/recipe_image/{{ recipe.id }}"
+        alt="Photo of {{ recipe.title }}"
+        class="recipe-image"
+      >
+    {% else %}
+      <div class="recipe-image-placeholder">
+        <span>🍲</span>
+        <p>No recipe photo yet</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Only the recipe creator can upload or change the image -->
+  {% if session.user_id == recipe.user_id %}
+    <form
+      action="/upload_image/{{ recipe.id }}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ session.csrf_token }}"
+      >
+
+      <label for="recipe_image">
+        Add or change recipe photo (PNG, max 5 MB):
+      </label>
+
+      <input
+        type="file"
+        id="recipe_image"
+        name="image"
+        accept="image/png"
+        required
+      >
+
+      <button type="submit">Upload image</button>
+    </form>
+  {% endif %}
+
   <p>
     Average rating:
     {% if rating_count %}
