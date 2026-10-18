@@ -12,10 +12,27 @@
     <a href="/">Back</a>
   </p>
   <hr>
-  <h2>User {{ user.username }}</h2>
+  <h2>{{ user.username }}</h2>
   <p>
     User has {{ recipes | count }} recipes.
   </p>
+  {% if latest_recipe %}
+  <section class="recipe-section">
+    <h3>Latest recipe</h3>
+    <p>
+      <a href="/recipe/{{ latest_recipe.id }}">
+        {{ latest_recipe.title }}
+      </a>
+    </p>
+    {% if latest_recipe.created_at %}
+      <p class="recipe-author">
+        Added: {{ latest_recipe.created_at[:16] | eu_datetime }}
+      </p>
+    {% else %}
+      <p class="recipe-author">Added date unavailable</p>
+    {% endif %}
+  </section>
+  {% endif %}
   <h2>Recipes</h2>
   <ul>
     {% for recipe in recipes %}

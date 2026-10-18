@@ -336,11 +336,15 @@ def show_user(user_id):
     if not user:
         abort(404)
 
-    recipes = users.get_recipes(user_id)
+    latest_recipe = recipes.get_latest_recipe(user_id)
+    user_recipes = users.get_recipes(user_id)
+
+    #recipes = users.get_recipes(user_id)
     return render_template(
         "show_user.html",
         user=user,
-        recipes=recipes,
+        recipes=user_recipes,
+        latest_recipe=latest_recipe,
     )
 
 

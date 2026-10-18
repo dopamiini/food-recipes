@@ -10,9 +10,9 @@
 <body>
   <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
   <p>
-    <a href="/">Back</a> |
+    <a href="/">Back</a>
     {% if session.user_id == recipe.user_id %}
-      <a href="/edit_recipe/{{ recipe.id }}">Edit recipe</a> |
+      <a href="/edit_recipe/{{ recipe.id }}">| Edit recipe</a> |
       <a href="/remove_recipe/{{ recipe.id }}">Remove recipe</a>
     {% endif %}
   </p>
@@ -131,7 +131,7 @@
     {% endif %}
   {% else %}
     <h3>Rate this recipe</h3>
-    <p><a href="/login">Log in</a> to rate this recipe.</p>
+    <p>You need a registered account to rate this recipe.</p>
   {% endif %}
   </section>
   <hr>
@@ -161,9 +161,11 @@
     {% else %}
       <p>No comments yet. Be the first to comment!</p>
     {% endif %}
-    <a href="/recipe/{{ recipe.id }}/comments">View all {{ comments|length }} comments</a>
+    {% if comments %}
+      <p><a href="/recipe/{{ recipe.id }}/comments">View all {{ comments|length }} comments</a></p>
+    {% endif %}
+    <h3>Add a comment</h3>
     {% if session.user_id %}
-      <h3>Add a comment</h3>
       <form action="/create_comment" method="POST" class="recipe-form">
         <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -171,7 +173,7 @@
         <button type="submit">Add comment</button>
       </form>
     {% else %}
-      <p><a href="/login">Log in</a> to leave a comment.</p>
+      <p>You need a registered account to leave a comment.</p>
     {% endif %}
   </section>
 </body>

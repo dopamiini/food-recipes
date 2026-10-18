@@ -12,6 +12,7 @@ def get_all_categories():
 
     return categories
 
+
 def add_recipe(user_id, title, description, ingredients, instructions, categories):
     sql = "INSERT INTO recipes (user_id, title, description, ingredients, instructions) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [user_id, title, description, ingredients, instructions])
@@ -22,13 +23,16 @@ def add_recipe(user_id, title, description, ingredients, instructions, categorie
     for category, value in categories:
         db.execute(sql, [recipe_id, category, value])
 
+
 def get_categories(recipe_id):
     sql = "SELECT category, value FROM recipe_categories WHERE recipe_id = ?"
     return db.query(sql, [recipe_id])
 
+
 def get_recipes():
     sql = "SELECT id, user_id, title FROM recipes ORDER BY id DESC"
     return db.query(sql)
+
 
 def get_recipe(recipe_id):
     sql = """SELECT users.username,
@@ -43,6 +47,17 @@ def get_recipe(recipe_id):
                    recipes.id = ?"""
     res = db.query(sql, [recipe_id])
     return res[0] if res else None
+
+
+def get_latest_recipe(user_id):
+    sql = """SELECT id, title, created_at
+             FROM recipes
+             WHERE user_id = ?
+             ORDER BY id DESC
+             LIMIT 1"""
+    result = db.query(sql, [user_id])
+    return result[0] if result else None
+
 
 def update_recipe(recipe_id, title, description, ingredients, instructions, categories):
     sql = """UPDATE recipes
@@ -60,11 +75,13 @@ def update_recipe(recipe_id, title, description, ingredients, instructions, cate
     for category, value in categories:
         db.execute(sql, [recipe_id, category, value])
 
+
 def remove_recipe(recipe_id):
     sql = "DELETE FROM recipe_categories WHERE recipe_id = ?"
     db.execute(sql, [recipe_id])
     sql = "DELETE FROM recipes WHERE id = ?"
     db.execute(sql, [recipe_id])
+
 
 def find_recipes(query):
     sql = """SELECT id, title
@@ -122,6 +139,7 @@ def get_rating(recipe_id):
     result = db.query(sql, (recipe_id,))[0]
     return result[0], result[1]
 
+
 def add_comment(recipe_id, user_id, comment):
     sql = """INSERT INTO comments (recipe_id, user_id, comment)
              VALUES (?, ?, ?)"""
@@ -149,6 +167,7 @@ def get_comments(recipe_id):
              ORDER BY comments.id DESC"""
 
     return db.query(sql, [recipe_id])
+
 
 
 def get_comment_by_id(comment_id):
