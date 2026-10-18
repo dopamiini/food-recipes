@@ -59,12 +59,12 @@ def validate_recipe_form():
         message = "Recipe description must be at most 80 characters."
     elif not ingredients:
         message = "Ingredients are required."
-    elif len(ingredients) > 1000:
-        message = "Ingredients must be at most 1000 characters."
+    elif len(ingredients) > 500:
+        message = "Ingredients must be at most 500 characters."
     elif not instructions:
         message = "Recipe instructions are required."
-    elif len(instructions) > 1000:
-        message = "Instructions must be at most 1000 characters."
+    elif len(instructions) > 500:
+        message = "Instructions must be at most 500 characters."
 
     categories = []
 

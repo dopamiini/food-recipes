@@ -1,23 +1,69 @@
 
+:root {
+    --color-background: #0a0a0a;
+    --color-surface: #171717;
+    --color-surface-hover: #242424;
+    --color-green: #39d353;
+    --color-green-hover: #2bb847;
+    --color-green-dark: #173b23;
+    --color-text: #ffffff;
+    --color-text-muted: #b8b8b8;
+    --color-border: #383838;
+    --color-error: #ff6b6b;
+    --color-success: #39d353;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+li {
+    color: var(--color-text);
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--color-green);
+}
+
 .error {
-    color: red;
+    color: var(--color-error);
 }
 
 .success {
-    color: black;
+    color: var(--color-success);
 }
 
 a:link,
 a:visited {
-    color: purple;
+    color: var(--color-green);
+}
+
+a:hover {
+    color: var(--color-green-hover);
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--color-green);
+    outline-offset: 3px;
 }
 
 .logo-black {
-    color: black;
+    color: var(--color-text);
 }
 
 .logo-grey {
-    color: grey;
+    color: var(--color-green);
 }
 
 .category-links {
@@ -29,11 +75,12 @@ a:visited {
 }
 
 .category-links a {
-    color: #287a4b;
+    color: var(--color-green);
     text-decoration: none;
 }
 
 .category-links a:hover {
+    color: var(--color-green-hover);
     text-decoration: underline;
 }
 
@@ -42,6 +89,22 @@ input[type="submit"] {
     padding: 3px 7px;
     font-size: 0.8rem;
     cursor: pointer;
+    background-color: var(--color-green);
+    color: #000000;
+    border: 1px solid var(--color-green);
+    border-radius: 5px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: var(--color-green-hover);
+    border-color: var(--color-green-hover);
+}
+
+button:disabled,
+input[type="submit"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 nav {
@@ -68,10 +131,15 @@ nav p {
     border: none;
     padding: 0;
     margin: 0;
-    color: purple;
+    color: var(--color-green);
     text-decoration: underline;
     font: inherit;
     cursor: pointer;
+}
+
+.link-button:hover {
+    background: none;
+    color: var(--color-green-hover);
 }
 
 .recipe-list {
@@ -87,7 +155,12 @@ nav p {
     flex-direction: row;
     align-items: flex-start;
     gap: 12px;
+    max-width: 40ch;
     list-style: none;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 12px;
 }
 
 .recipe-link {
@@ -108,22 +181,27 @@ nav p {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    min-width: 0;
 }
 
 .recipe-title {
     font-size: 1.1rem;
     font-weight: bold;
-    color: inherit;
+    color: var(--color-text);
     text-decoration: none;
+}
+
+.recipe-title:hover {
+    color: var(--color-green);
 }
 
 .recipe-author {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--color-text-muted);
 }
 
 .recipe-author a {
-    color: inherit;
+    color: var(--color-green);
     text-decoration: none;
 }
 
@@ -133,13 +211,13 @@ nav p {
 
 .recipe-rating {
     font-size: 0.9rem;
-    color: #555;
+    color: var(--color-green);
     margin-top: 2px;
 }
 
 .recipe-description {
     font-size: 0.95rem;
-    color: #444;
+    color: var(--color-text-muted);
     line-height: 1.4;
     max-width: 600px;
 }
@@ -208,6 +286,7 @@ nav p {
 }
 
 .recipe-body-text {
+    color: var(--color-text);
     line-height: 1.7;
     white-space: pre-line;
     max-width: 850px;
@@ -223,8 +302,9 @@ nav p {
     display: inline-block;
     padding: 5px 10px;
     border-radius: 16px;
-    background: #e8f3eb;
-    color: #287a4b;
+    background: var(--color-green-dark);
+    color: var(--color-green);
+    border: 1px solid #285a35;
     font-size: 0.9rem;
 }
 
@@ -249,6 +329,42 @@ nav p {
     cursor: pointer;
 }
 
+input,
+textarea,
+select {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+}
+
+input,
+select {
+    padding: 6px 8px;
+}
+
+textarea {
+    padding: 10px;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--color-green);
+    outline-offset: 1px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--color-green);
+}
+
 .comments-heading {
     display: flex;
     align-items: center;
@@ -264,12 +380,12 @@ nav p {
 .comment {
     margin-bottom: 20px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--color-green);
 }
 
 .comment-date {
     font-size: 0.8rem;
-    color: #777;
+    color: var(--color-text-muted);
     margin-left: 8px;
 }
 
@@ -279,8 +395,12 @@ nav p {
 }
 
 .comment-actions a {
-    color: #666;
+    color: var(--color-green);
     text-decoration: none;
+}
+
+.comment-actions a:hover {
+    text-decoration: underline;
 }
 
 .search-row {
@@ -319,7 +439,7 @@ nav p {
     font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
-    color: black;
+    color: var(--color-text);
     padding-top: 6px;
 }
 
@@ -336,19 +456,27 @@ nav p {
     align-items: center;
     gap: 4px;
     padding: 4px 9px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border);
     border-radius: 16px;
+    background-color: var(--color-surface);
+    color: var(--color-text);
     font-size: 13px;
     cursor: pointer;
 }
 
 .category-chip:has(input:checked) {
-    background: #e5e7eb;
-    border-color: #666;
+    background: var(--color-green-dark);
+    border-color: var(--color-green);
+    color: var(--color-green);
 }
 
 .category-chip input {
     margin: 0;
+}
+
+small,
+.text-muted {
+    color: var(--color-text-muted);
 }
 
 @media (max-width: 480px) {
@@ -365,5 +493,15 @@ nav p {
         max-width: 100%;
         height: auto;
         aspect-ratio: 1;
+    }
+
+    .recipe-card {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .recipe-image {
+        width: 80px;
+        height: 80px;
     }
 }

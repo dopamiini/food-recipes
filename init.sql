@@ -1,5 +1,6 @@
 DELETE FROM categories;
 
+
 INSERT INTO categories (category, value) VALUES ('Type', 'Breakfast');
 INSERT INTO categories (category, value) VALUES ('Type', 'Lunch');
 INSERT INTO categories (category, value) VALUES ('Type', 'Dinner');
