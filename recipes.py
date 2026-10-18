@@ -223,14 +223,41 @@ def update_image(recipe_id, image):
 
 
 def save_image(recipe_id, image):
-    sql = """
-        INSERT INTO images (recipe_id, image)
-        VALUES (?, ?)
-        ON CONFLICT(recipe_id)
-        DO UPDATE SET image = excluded.image"""
+    sql = """INSERT INTO images (recipe_id, image)
+             VALUES (?, ?)
+             ON CONFLICT(recipe_id)
+             DO UPDATE SET image = excluded.image"""
     db.execute(sql, [recipe_id, image])
 
 
 def remove_image(recipe_id):
     sql = "DELETE FROM images WHERE recipe_id = ?"
     db.execute(sql, [recipe_id])
+
+
+def get_recipes_with_images():
+    sql = """SELECT
+                 r.*,
+                 u.username AS author,
+                 EXISTS (
+                     SELECT 1
+                     FROM images AS i
+                     WHERE i.recipe_id = r.id
+                 ) AS has_image,
+                 COALESCE(rs.rating_count, 0) AS rating_count,
+                 rs.avg_rating AS avg_rating
+                 FROM recipes AS r
+                 JOIN users AS u
+                     ON u.id = r.user_id
+                 LEFT JOIN (
+                     SELECT
+                         recipe_id,
+                         AVG(rating) AS avg_rating,
+                         COUNT(*) AS rating_count
+                     FROM ratings
+                     GROUP BY recipe_id
+                 ) AS rs
+                     ON rs.recipe_id = r.id
+                 ORDER BY r.id DESC"""
+
+    return db.query(sql)

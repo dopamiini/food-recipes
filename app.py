@@ -108,7 +108,7 @@ def validate_recipe_form():
 def index():
     message, message_type = get_flash_messages()
 
-    all_recipes = recipes.get_recipes()
+    all_recipes = recipes.get_recipes_with_images()
     
     return render_template(
         "index.html",

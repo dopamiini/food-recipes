@@ -36,9 +36,39 @@
   {% endif %}
   <h2>Recipes ({{ recipes|length }})</h2>
   {% if recipes %}
-    <ul>
+    <ul class="recipe-list">
     {% for recipe in recipes %}
-      <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
+      <li class="recipe-card">
+        <a href="/recipe/{{ recipe.id }}" class="recipe-link">
+          {% if recipe.has_image %}
+            <img src="/recipe_image/{{ recipe.id }}" alt="Photo of {{ recipe.title }}" class="recipe-image">
+          {% else %}
+            <img src="{{ url_for('static', filename='images/default.png') }}" alt="Recipe default img" class="recipe-image">
+          {% endif %}
+        </a>
+        <div class="recipe-info">
+          <a href="/recipe/{{ recipe['id'] }}" class="recipe-title">{{ recipe['title'] }}</a>
+          <span class="recipe-author">
+            By <a href="/user/{{ recipe['user_id'] }}">{{ recipe['author'] }}</a>
+          </span>
+          <div class="recipe-rating">
+          {% if recipe["rating_count"] > 0 %}
+            ⭐ {{ "%.1f"|format(recipe["avg_rating"]) }}
+            ({{ recipe["rating_count"] }}
+            {% if recipe["rating_count"] == 1 %}
+              rating
+            {% else %}
+              ratings
+            {% endif %})
+          {% else %}
+            No ratings yet
+          {% endif %}
+          </div>
+          <div class="recipe-description">
+            {{ recipe["description"] }}
+          </div>
+        </div>
+      </li>
     {% endfor %}
     </ul>
   {% else %}
