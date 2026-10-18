@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comments - {{ recipe.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
+    <p>
+        <a href="/recipe/{{ recipe.id }}">Back</a>
+    </p>
+    <hr>
+    <h2>Comments for {{ recipe.title }} ({{ comments|length }})</h2>
+    {% for comment in comments %}
+        <div class="comment">
+            <p>
+                <strong>{{ comment.username }}</strong>
+                <small class="comment-date">
+                    {{ comment.created_at[:16] | eu_datetime }}
+                </small>
+                <br>
+                {{ comment.comment }}
+            </p>
+            {% if session.user_id == comment.user_id %}
+                <div class="comment-actions">
+                    <a href="/edit_comment/{{ comment.id }}">Edit</a>
+                    |
+                    <a href="/remove_comment/{{ comment.id }}">Remove</a>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endfor %}
+</body>
+
+</html>

@@ -7,11 +7,10 @@
 </head>
 
 <body>
-  <h1>Recepio</h1>
-
+  <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
   {% if session.username %}
   <p>
-    (Logged in as {{ session.username }}) | 
+    (Logged in as {{ session.username }}) |
     <a href="/logout">Logout</a>
   </p>
   {% else %}

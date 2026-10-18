@@ -206,6 +206,22 @@ def show_recipe(recipe_id):
     )
 
 
+@app.route("/recipe/<int:recipe_id>/comments")
+def show_recipe_comments(recipe_id):
+    recipe = recipes.get_recipe(recipe_id)
+
+    if not recipe:
+        abort(404)
+
+    comments = recipes.get_comments(recipe_id)
+
+    return render_template(
+        "show_comments.html",
+        recipe=recipe,
+        comments=comments,
+    )
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -752,24 +768,18 @@ def remove_image(recipe_id):
     if recipe["user_id"] != session.get("user_id"):
         abort(403)
 
-    if request.method == "GET":
-        return render_template(
-            "remove_image.html",
-            recipe=recipe,
-        )
-
     if request.method == "POST":
         check_csrf()
 
-        if "remove" in request.form:
+        if request.form.get("action") == "Remove":
             recipes.remove_image(recipe_id)
 
             session["message"] = "Recipe image removed successfully!"
             session["message_type"] = "success"
 
-            return redirect("/recipe/" + str(recipe_id))
-        else:
-            return redirect("/recipe/" + str(recipe_id))
+        return redirect("/recipe/" + str(recipe_id))
+
+    return render_template("remove_image.html", recipe=recipe)
 
 
 @app.route("/recipe_image/<int:recipe_id>")

@@ -7,7 +7,9 @@
 </head>
 
 <body>
-  <h1>Remove recipe</h1>
+  <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
+  <hr>
+  <h2>Remove recipe</h2>
   <p>Recipe: {{ recipe.title }}</p>
   <p>Are you sure you want to remove this recipe?</p>
   <form action="/remove_recipe/{{ recipe.id }}" method="POST">

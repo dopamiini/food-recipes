@@ -7,12 +7,14 @@
 </head>
 
 <body>
-  <h1>Remove image</h1>
+  <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
+  <hr>
+  <h2>Remove image</h2>
   <p>Are you sure you want to remove this image?</p>
   <form action="/remove_image/{{ recipe.id }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <input type="submit" name="remove" value="Remove">
-    <input type="submit" name="back" value="Cancel">
+    <input type="submit" name="action" value="Remove">
+    <input type="submit" name="action" value="Cancel">
   </form>
 </body>
 

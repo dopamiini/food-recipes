@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <h1><span>R</span>ecepio</h1>
+  <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
   <nav>
     <p>
       {% if session.username %}
@@ -22,7 +22,6 @@
         |
       {% endif %}
     </p>
-
     {% if session.username %}
       <form action="/logout" method="POST" class="logout-form">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

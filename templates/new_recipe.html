@@ -7,10 +7,8 @@
 </head>
 
 <body>
-  <h1>Recepio</h1>
-  <p>
-    <a href="/">Back</a>
-  </p>
+  <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
+  <p><a href="/">Back</a></p>
   <hr>
   {% if message %}
     <p id="message" class="{{ message_type }}">{{ message }}</p>
@@ -48,7 +46,7 @@
     </p>
     {% endfor %}
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <input type="submit" value="Add">
+    <input type="submit" value="Add recipe">
   </form>
 </body>
 

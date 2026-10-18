@@ -1,188 +1,179 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
-  <title>Show recipe</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>{{ recipe.title }} - Recepio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 
 <body>
-  <h1>Recepio</h1>
-
+  <h1><span class="logo-black">Recep</span><span class="logo-grey">io</span></h1>
   <p>
-    <a href="/">Back</a>
+    <a href="/">Back</a> |
     {% if session.user_id == recipe.user_id %}
-      | <a href="/edit_recipe/{{ recipe.id }}">Edit</a>
-      | <a href="/remove_recipe/{{ recipe.id }}">Remove</a>
+      <a href="/edit_recipe/{{ recipe.id }}">Edit recipe</a> |
+      <a href="/remove_recipe/{{ recipe.id }}">Remove recipe</a>
     {% endif %}
   </p>
-
   <hr>
-
   {% if message %}
     <p id="message" class="{{ message_type }}">{{ message }}</p>
   {% endif %}
-
   <h2>{{ recipe.title }}</h2>
-
-  <div class="recipe-image-container">
-    {% if has_image %}
-      <img src="/recipe_image/{{ recipe.id }}" alt="Photo of {{ recipe.title }}" class="recipe-image">
-      <a href="/remove_image/{{ recipe.id }}" class="remove-image-button">Remove</a>
-    {% else %}
-      <img src="/static/images/default.png" alt="Recipe placeholder" class="recipe-image">
-    {% endif %}
-  </div>
-
-  {% if session.user_id == recipe.user_id %}
-    <form action="/upload_image/{{ recipe.id }}" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-
-      <label for="recipe_image">
-        Add or change recipe photo (PNG, max 5 MB):
-      </label>
-
-      <input type="file" id="recipe_image" name="image" accept="image/png" required>
-
-      <button type="submit">Upload image</button>
-    </form>
-  {% endif %}
-
-  <p>
+  <p class="recipe-author">
+    Created by <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>
+  </p>
+  <p class="recipe-rating">
     Average rating:
     {% if rating_count %}
-      {{ "%.1f"|format(average_rating) }} / 5
+      <strong>⭐ {{ "%.1f"|format(average_rating) }} / 5</strong>
       ({{ rating_count }} ratings)
     {% else %}
       No ratings yet
     {% endif %}
   </p>
-
-  <p>
-    Description: {{ recipe.description }}
-  </p>
-
-  <p>
-    Ingredients: {{ recipe.ingredients }}
-  </p>
-
-  <p>
-    Instructions: {{ recipe.instructions }}
-  </p>
-
-  <p>
-    Creator:
-    <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>
-  </p>
-
+    <div class="recipe-image-section">
+      <div class="recipe-image-container">
+        {% if has_image %}
+          <img src="/recipe_image/{{ recipe.id }}" alt="Recipe img" class="recipe-detail-image">
+        {% else %}
+          <img src="/static/images/default.png" alt="Recipe img" class="recipe-detail-image">
+        {% endif %}
+      </div>
+      {% if session.user_id == recipe.user_id %}
+      <div class="recipe-image-actions">
+        {% if has_image %}
+          <a href="/remove_image/{{ recipe.id }}" class="remove-image-button">Remove image</a>
+        {% endif %}
+        <form action="/upload_image/{{ recipe.id }}" method="POST" enctype="multipart/form-data" class="upload-image-form">
+          <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+          <label for="recipe_image">
+          {% if has_image %}
+            <strong>Update image</strong>
+          {% else %}
+            <strong>Add image</strong>
+        {% endif %}
+        </label>
+        <input type="file" id="recipe_image" name="image" accept="image/png" required>
+        <button type="submit">Upload image</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
   {% if categories %}
+  <section class="recipe-section">
     <h3>Categories</h3>
-    <ul>
+    <div class="recipe-categories">
       {% for group in categories %}
-        <li>{{ group.category }}: {{ group.value }}</li>
+        <span class="recipe-category">
+          {{ group.category }}: {{ group.value }}
+        </span>
       {% endfor %}
-    </ul>
+    </div>
+  </section>
   {% endif %}
-
+  <section class="recipe-section">
+    <h3>Description</h3>
+    <p class="recipe-body-text">{{ recipe.description }}</p>
+  </section>
+  <section class="recipe-section">
+    <h3>Ingredients</h3>
+    <p class="recipe-body-text">{{ recipe.ingredients }}</p>
+  </section>
+  <section class="recipe-section">
+    <h3>Instructions</h3>
+    <p class="recipe-body-text">{{ recipe.instructions }}</p>
+  </section>
+  <hr>
+  <section class="recipe-section" id="rating">
   {% if session.user_id %}
-
     {% if user_rating %}
-      <h2>Your rating</h2>
-
-      <p>You rated this recipe {{ user_rating.rating }} / 5</p>
-
-      <form action="/edit_rating" method="POST">
-        <input type="hidden" name="csrf_token"
-               value="{{ session.csrf_token }}">
-        <input type="hidden" name="rating_id"
-               value="{{ user_rating.id }}">
-
-        <label for="edit_rating">Change your rating:</label>
-
-        <select id="edit_rating" name="rating" required>
+      <h3>Your rating</h3>
+      <p>You rated this recipe {{ user_rating.rating }} / 5.</p>
+      <form action="/edit_rating" method="POST" class="recipe-form">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="hidden" name="rating_id" value="{{ user_rating.id }}">
+        <div class="rating-edit-row">
+          <label for="edit_rating">Change your rating:</label>
+          <select id="edit_rating" name="rating" required>
           {% for score in range(1, 6) %}
             <option value="{{ score }}"
               {% if score == user_rating.rating %}selected{% endif %}>
               {{ score }} star{% if score != 1 %}s{% endif %}
             </option>
           {% endfor %}
-        </select>
-
-        <input type="submit" value="Update rating">
+          </select>
+        </div>
+        <button type="submit">Update rating</button>
       </form>
-
-      <form action="/remove_rating" method="POST">
-        <input type="hidden" name="csrf_token"
-               value="{{ session.csrf_token }}">
-        <input type="hidden" name="rating_id"
-               value="{{ user_rating.id }}">
-
-        <input type="submit" value="Remove rating">
+      <form action="/remove_rating" method="POST" class="recipe-form">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="hidden" name="rating_id" value="{{ user_rating.id }}">
+        <button type="submit">Remove rating</button>
       </form>
-
     {% else %}
-      <h2>Rate the recipe</h2>
-
-      <form action="/create_rating" method="POST">
-        <input type="hidden" name="csrf_token"
-               value="{{ session.csrf_token }}">
-        <input type="hidden" name="recipe_id"
-               value="{{ recipe.id }}">
-
+      <h3>Rate this recipe</h3>
+      <form action="/create_rating" method="POST" class="recipe-form">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
         <label for="rating">Choose a score:</label>
-
-        <select id="rating" name="rating">
+        <select id="rating" name="rating" required>
           <option value="">Select a rating</option>
-          {% for score in range(1, 6) %}
-            <option value="{{ score }}">
-              {{ score }} star{% if score != 1 %}s{% endif %}
-            </option>
-          {% endfor %}
+        {% for score in range(1, 6) %}
+          <option value="{{ score }}">
+            {{ score }} star{% if score != 1 %}s{% endif %}
+          </option>
+        {% endfor %}
         </select>
-
-        <input type="submit" value="Rate">
+        <button type="submit">Rate recipe</button>
       </form>
     {% endif %}
-
-    <h2>Leave a comment</h2>
-
-    <form action="/create_comment" method="POST">
-      <textarea name="comment" rows="4" cols="60" maxlength="200"></textarea>
-      <br>
-
-      <input type="hidden" name="recipe_id"
-             value="{{ recipe.id }}">
-      <input type="hidden" name="csrf_token"
-             value="{{ session.csrf_token }}">
-
-      <input type="submit" value="Add comment">
-    </form>
-
   {% else %}
-    <p>
-      <a href="/login">Log in</a> to rate this recipe or leave a comment.
-    </p>
+    <h3>Rate this recipe</h3>
+    <p><a href="/login">Log in</a> to rate this recipe.</p>
   {% endif %}
-
-<h2>Comments</h2>
-
-{% for comment in comments %}
-  <div class="comment">
-    <p>
-      <strong>{{ comment.username }}</strong>
-      <small class="comment-date">{{ comment.created_at[:16] | eu_datetime }}</small>
-      <br>
-      {{ comment.comment }}
-    </p>
-  {% if session.user_id == comment.user_id %}
-    <a href="/edit_comment/{{ comment.id }}">Edit</a>
-  | <a href="/remove_comment/{{ comment.id }}">Remove</a>
-  {% endif %}
-  </div>
-{% else %}
-  <p>No comments yet.</p>
-{% endfor %}
-
+  </section>
+  <hr>
+  <section class="recipe-section" id="comments">
+    <div class="comments-heading">
+      <h3>Comments ({{ comments|length }})</h3>
+    </div>
+    {% if comments %}
+      {% set comment = comments[0] %}
+      <p class="latest-comment-label">Latest comment</p>
+      <div class="comment">
+      <p>
+        <strong>{{ comment.username }}</strong>
+        <small class="comment-date">
+          {{ comment.created_at[:16] | eu_datetime }}
+        </small>
+        <br>
+        {{ comment.comment }}
+      </p>
+      {% if session.user_id == comment.user_id %}
+        <div class="comment-actions">
+          <a href="/edit_comment/{{ comment.id }}">Edit</a>        |
+          <a href="/remove_comment/{{ comment.id }}">Remove</a>
+        </div>
+      {% endif %}
+      </div>
+    {% else %}
+      <p>No comments yet. Be the first to comment!</p>
+    {% endif %}
+    <a href="/recipe/{{ recipe.id }}/comments">View all {{ comments|length }} comments</a>
+    {% if session.user_id %}
+      <h3>Add a comment</h3>
+      <form action="/create_comment" method="POST" class="recipe-form">
+        <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <textarea id="comment" name="comment" rows="4" maxlength="200" required></textarea>
+        <button type="submit">Add comment</button>
+      </form>
+    {% else %}
+      <p><a href="/login">Log in</a> to leave a comment.</p>
+    {% endif %}
+  </section>
 </body>
 
 </html>
