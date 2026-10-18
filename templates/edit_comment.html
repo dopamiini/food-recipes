@@ -1,22 +1,18 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Edit comment</title>
 </head>
 <body>
-    <h1>Edit comment</h1>
-
+  <h1>Recepio</h1>
+  <p><a href="/recipe/{{ comment.recipe_id }}">Back</a></p>
+  <hr>
+  <h2>Edit comment</h2>
     <form action="/edit_comment/{{ comment.id }}" method="POST">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-
-        <label for="comment">Comment:</label>
-
-        <textarea id="comment" name="comment" required rows="4">{{ comment_text if comment_text is defined else comment.comment }}</textarea>
-
-        <button type="submit">Update</button>
+      <textarea id="comment" name="comment" required rows="4" cols="60" maxlength="200">{{ comment_text if comment_text is defined else comment.comment }}</textarea>
+      <br>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <button type="submit">Update</button>
     </form>
-
-    <a href="/recipe/{{ comment.recipe_id }}">Cancel</a>
 </body>
 </html>

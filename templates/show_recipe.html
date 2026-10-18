@@ -167,12 +167,13 @@
 <h2>Comments</h2>
 
 {% for comment in comments %}
-  <div>
+  <div class="comment">
     <p>
       <strong>{{ comment.username }}</strong>
+      <small class="comment-date">{{ comment.created_at[:16] | eu_datetime }}</small>
+      <br>
       {{ comment.comment }}
     </p>
-
   {% if session.user_id == comment.user_id %}
     <a href="/edit_comment/{{ comment.id }}">Edit</a>
   | <a href="/remove_comment/{{ comment.id }}">Remove</a>

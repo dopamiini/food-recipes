@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, abort, redirect, render_template, request, session
+from datetime import datetime
 import config
 import db, recipes, secrets, users
 
@@ -102,6 +103,12 @@ def validate_recipe_form():
         "categories": categories,
         "message": message,
     }
+
+
+@app.template_filter("eu_datetime")
+def eu_datetime(value):
+    dt = datetime.strptime(value, "%Y-%m-%d %H:%M")
+    return dt.strftime("%d.%m.%Y %H:%M")
 
 
 @app.route("/")

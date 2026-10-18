@@ -138,12 +138,16 @@ def update_comment(comment_id, user_id, new_comment):
 
 
 def get_comments(recipe_id):
-    sql = """SELECT comments.id, comments.user_id,
-                    comments.comment, users.username
+    sql = """SELECT comments.id,
+                    comments.user_id,
+                    comments.comment,
+                    comments.created_at,
+                    users.username
              FROM comments
              JOIN users ON comments.user_id = users.id
              WHERE comments.recipe_id = ?
              ORDER BY comments.id DESC"""
+
     return db.query(sql, [recipe_id])
 
 

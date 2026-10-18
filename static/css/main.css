@@ -127,3 +127,25 @@ nav p {
     line-height: 1.4;
     max-width: 600px;
 }
+
+.comment {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.comment-date {
+    font-size: 0.8rem;
+    color: #777;
+    margin-left: 8px;
+}
+
+.comment-actions {
+    font-size: 0.85rem;
+    margin-top: -8px;
+}
+
+.comment-actions a {
+    color: #666;
+    text-decoration: none;
+}
