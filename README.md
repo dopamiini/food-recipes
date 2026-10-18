@@ -2,34 +2,58 @@
 
 The app currently allows registered users to create, edit, and remove their own recipes. All users can view and search all recipes. The user can register an account and login using it. Navigating and using the app should be intuitive.
 
-## Requirements
+## Running the Application
 
-Git and Python 3.10 or newer.
+You need Python version 3.10 or later.
 
-## Installation and Setup
+### 1. Clone the repository and navigate to the project directory
 
 ```bash
 git clone https://github.com/dopamiini/food-recipes
 cd food-recipes
-
-# Initialize the database as follows:
-# sqlite3 database.db < schema.sql (Linux)
-# sqlite3 database.db < init.sql (Linux)
-# Get-Content .\schema.sql | sqlite3 .\database.db (Windows)
-# Get-Content .\init.sql | sqlite3 .\database.db (Windows)
 ```
 
-Run the app via `flask run`. Once the server is running, open `http://127.0.0.1:5000` in your browser to interact with the demo app.
+### 2. Create a virtual environment and install Flask
 
-## Recent updates ✓
+**Linux and macOS:**
 
-All the current requirements for the milestone and previous milestones should be met.
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-* Added user access and authorization checks for protected pages and actions (add, edit, delete).
-* Added input validation before storing data in the database.
-* Added user profile pages with statistics and the user's recipes.
-* Added two database-backed categories to recipes.
-* Added comments so logged in users can provide comments on other users' recipes.
+**Windows (PowerShell):**
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 3. Initialize the database
+
+This command creates the database using the `schema.sql` file.
+
+**Linux and macOS:**
+
+```bash
+python3 init_db.py
+```
+
+**Windows:** Use `python` instead of `python3`.
+
+```powershell
+python init_db.py
+```
+
+### 4. Start the application
+
+```bash
+flask run
+```
+
+The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 ## Basic functional requirements:
 
@@ -45,13 +69,12 @@ All the current requirements for the milestone and previous milestones should be
   * **Diet:** lactose-free, gluten-free, or vegan ✅
 * The user can comment and rate other recipes.
   * Recipes will show user comments. ✅
-  * Recipes will show the average rating score. ❌
+  * Recipes will show the average rating score. ✅
 
 ## Additional functionalities:
 
 * Unregistered users can still view recipes but are not able to add, modify, comment, or rate recipes. ✅
-* The user can add a picture to their recipe. ❌
-* The user can sort recipes by date using options such as **"Newest"**. ❌
+* The user can add a picture to their recipe. ✅
 
 ## Data Entities
 
@@ -62,5 +85,9 @@ The primary entity is a **recipe**, and the secondary entity is a **comment** as
 Note that the requirements may be updated during the project, but none of the mandatory basic requirements will be removed. Current working idea for the app name is Recepio. A rough first sketch of the app can be found [here](images/food-recipes.png).
 
 ## Testing
+
+## Pylint
+
+Pylint report is in the file pylint-report.md
 
 Testing documentation and test cases can be found [here](documents/testing.md).
