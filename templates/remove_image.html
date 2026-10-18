@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Remove image</title>
+</head>
+
+<body>
+  <h1>Remove image</h1>
+  <p>Are you sure you want to remove this image?</p>
+  <form action="/remove_image/{{ recipe.id }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    <input type="submit" name="remove" value="Remove">
+    <input type="submit" name="back" value="Cancel">
+  </form>
+</body>
+
+</html>

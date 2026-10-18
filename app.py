@@ -117,19 +117,68 @@ def index():
         recipes=all_recipes,
     )
 
-
+"""
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query")
+
     if query:
         results = recipes.find_recipes(query)
     else:
         query = ""
         results = []
+
+    result_count = len(results)
+
     return render_template(
         "find_recipe.html",
         query=query,
         results=results,
+        result_count=result_count,
+    )
+"""
+
+
+@app.route("/find_recipe")
+def find_recipe():
+    query = request.args.get("query", "").strip()
+    categories = recipes.get_all_categories()
+
+    selected_values = list(dict.fromkeys(
+        request.args.getlist("category")
+    ))
+
+    selected_categories = []
+
+    for entry in selected_values:
+        parts = entry.split(":", 1)
+
+        if len(parts) != 2:
+            abort(400)
+
+        category, value = parts
+
+        if category not in categories or value not in categories[category]:
+            abort(400)
+
+        selected_categories.append((category, value))
+
+    if selected_categories:
+        results = recipes.find_recipes_by_categories(
+            selected_categories, query
+        )
+    elif query:
+        results = recipes.find_recipes(query)
+    else:
+        results = []
+
+    return render_template(
+        "find_recipe.html",
+        query=query,
+        results=results,
+        result_count=len(results),
+        categories=categories,
+        selected_categories=selected_values,
     )
 
 
@@ -509,6 +558,50 @@ def create_comment():
     return redirect("/recipe/" + str(recipe_id))
 
 
+@app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
+def edit_comment(comment_id):
+    require_login()
+
+    comment = recipes.get_comment_by_id(comment_id)
+
+    if not comment:
+        abort(404)
+
+    if comment["user_id"] != session.get("user_id"):
+        abort(403)
+
+    if request.method == "GET":
+        return render_template(
+            "edit_comment.html",
+            comment=comment,
+        )
+
+    if request.method == "POST":
+        check_csrf()
+
+        new_comment = request.form.get("comment", "").strip()
+
+        if not new_comment:
+            session["message"] = "Comment cannot be empty."
+            session["message_type"] = "error"
+            return render_template(
+                "edit_comment.html",
+                comment=comment,
+                comment_text=new_comment,
+            )
+
+        recipes.update_comment(
+            comment["id"],
+            session["user_id"],
+            new_comment,
+        )
+
+        session["message"] = "Comment updated successfully!"
+        session["message_type"] = "success"
+
+        return redirect("/recipe/" + str(comment["recipe_id"]))
+
+
 @app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
 def remove_comment(comment_id):
     require_login()
@@ -668,6 +761,38 @@ def upload_image(recipe_id):
     session["message_type"] = "success"
 
     return redirect("/recipe/" + str(recipe_id))
+
+
+@app.route("/remove_image/<int:recipe_id>", methods=["GET", "POST"])
+def remove_image(recipe_id):
+    require_login()
+
+    recipe = recipes.get_recipe(recipe_id)
+
+    if not recipe:
+        abort(404)
+
+    if recipe["user_id"] != session.get("user_id"):
+        abort(403)
+
+    if request.method == "GET":
+        return render_template(
+            "remove_image.html",
+            recipe=recipe,
+        )
+
+    if request.method == "POST":
+        check_csrf()
+
+        if "remove" in request.form:
+            recipes.remove_image(recipe_id)
+
+            session["message"] = "Recipe image removed successfully!"
+            session["message_type"] = "success"
+
+            return redirect("/recipe/" + str(recipe_id))
+        else:
+            return redirect("/recipe/" + str(recipe_id))
 
 
 @app.route("/recipe_image/<int:recipe_id>")

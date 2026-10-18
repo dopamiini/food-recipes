@@ -11,6 +11,23 @@ a:visited {
     color: purple;
 }
 
+.category-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.category-links a {
+    color: #287a4b;
+    text-decoration: none;
+}
+
+.category-links a:hover {
+    text-decoration: underline;
+}
+
 nav {
     display: flex;
     align-items: baseline;

@@ -3,7 +3,7 @@
 
 <head>
   <title>Recepio</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 
 <body>
@@ -34,7 +34,7 @@
   {% if message %}
     <p id="message" class="{{ message_type }}">{{ message }}</p>
   {% endif %}
-  <h2>Recipes</h2>
+  <h2>Recipes ({{ recipes|length }})</h2>
   {% if recipes %}
     <ul>
     {% for recipe in recipes %}

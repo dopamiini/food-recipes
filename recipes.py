@@ -73,6 +73,45 @@ def find_recipes(query):
              ORDER BY id DESC"""
     return db.query(sql, ["%" + query + "%", "%" + query + "%"])
 
+
+def find_recipes_by_categories(selected_categories, query=""):
+    conditions = []
+    params = []
+
+    for category, value in selected_categories:
+        conditions.append(
+            "(recipe_categories.category = ? AND recipe_categories.value = ?)"
+        )
+        params.extend([category, value])
+
+    sql = """
+        SELECT recipes.id, recipes.title
+        FROM recipes
+        JOIN recipe_categories
+            ON recipes.id = recipe_categories.recipe_id
+        WHERE (""" + " OR ".join(conditions) + ")"
+
+    if query:
+        sql += """
+            AND (
+                recipes.title LIKE ?
+                OR recipes.description LIKE ?
+            )"""
+        
+        params.extend(["%" + query + "%", "%" + query + "%"])
+
+    sql += """
+        GROUP BY recipes.id, recipes.title
+        HAVING COUNT(
+            DISTINCT recipe_categories.category || ':' || recipe_categories.value
+        ) = ?
+        ORDER BY recipes.id DESC"""
+    
+    params.append(len(selected_categories))
+
+    return db.query(sql, params)
+
+
 def get_rating(recipe_id):
     sql = """
         SELECT AVG(rating), COUNT(*)
@@ -87,6 +126,15 @@ def add_comment(recipe_id, user_id, comment):
     sql = """INSERT INTO comments (recipe_id, user_id, comment)
              VALUES (?, ?, ?)"""
     db.execute(sql, [recipe_id, user_id, comment])
+
+
+def update_comment(comment_id, user_id, new_comment):
+    sql = """
+        UPDATE comments
+        SET comment = ?
+        WHERE id = ? AND user_id = ?
+    """
+    db.execute(sql, [new_comment, comment_id, user_id])
 
 
 def get_comments(recipe_id):
