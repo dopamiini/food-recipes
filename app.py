@@ -128,6 +128,10 @@ def index():
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query", "").strip()
+
+    if len(query) > 80:
+        abort(400)
+
     categories = recipes.get_all_categories()
 
     selected_values = list(dict.fromkeys(request.args.getlist("category")))
@@ -147,13 +151,13 @@ def find_recipe():
 
         selected_categories.append((category, value))
 
-    if not query:
-        results = recipes.get_recipes()
-    elif selected_categories:
+    if selected_categories:
         results = recipes.find_recipes_by_categories(selected_categories, query)
-    else:
+    elif query:
         results = recipes.find_recipes(query)
-        
+    else:
+        results = recipes.get_recipes()
+
     return render_template(
         "find_recipe.html",
         query=query,

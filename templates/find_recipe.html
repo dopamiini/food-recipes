@@ -3,71 +3,55 @@
 
 <head>
   <title>Find recipe</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 
 <body>
   <h1>Recepio</h1>
-
   <p><a href="/">Back</a></p>
-
   <hr>
-
   <h2>Find recipe</h2>
-
   <form action="/find_recipe" method="GET">
-
-    <h3>Browse categories</h3>
-
+    <div class="search-row">
+      <input type="text" name="query" placeholder="Search recipes..." value="{{ query }}" maxlength="40">
+      <button type="submit">Search</button>
+    </div>
+    <div class="filters">
     {% for group, values in categories.items() %}
-      <p>
-        <strong>{{ group }}</strong><br>
-
+      <div class="category-row">
+        <span class="category-label">
+          <strong>{{ group | upper }}</strong>
+        </span>
+        <div class="category-options">
         {% for value in values %}
-          <label>
-            <input
+          <label class="category-chip">
+          <input
               type="checkbox"
               name="category"
               value="{{ group }}:{{ value }}"
-              {% if (group ~ ':' ~value) in selected_categories %}
+              {% if (group ~ ':' ~ value) in selected_categories %}
                 checked
               {% endif %}
-            >
-            {{ value }}
+          >   
+          {{ value }}
           </label>
-          &nbsp;
         {% endfor %}
-      </p>
+        </div>
+      </div>
     {% endfor %}
-
-    <hr>
-
-    <p>
-      Keyword:
-      <input
-        type="text"
-        name="query"
-        value="{{ query }}"
-      >
-    </p>
-
-    <input type="submit" value="Find recipes">
-
+    </div>
   </form>
-
+  <hr>
   <h2>Results ({{ result_count }})</h2>
-    {% if results %}
-      <ul>
-        {% for recipe in results %}
-          <li>
-            <a href="/recipe/{{ recipe.id }}">
-              {{ recipe.title }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No recipes found matching your selections.</p>
-    {% endif %}
+  {% if results %}
+    <ul>
+      {% for recipe in results %}
+        <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No recipes found matching your selections.</p>
+  {% endif %}
 
 </body>
 

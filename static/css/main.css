@@ -149,3 +149,71 @@ nav p {
     color: #666;
     text-decoration: none;
 }
+
+.search-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.search-row input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    max-width: 30ch;
+    padding: 7px 10px;
+    font-size: 14px;
+}
+
+.search-row button {
+    padding: 7px 14px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filters {
+    margin-bottom: 18px;
+}
+
+
+.category-row {
+    display: flex;
+    align-items: start;
+    column-gap: 8px;
+    margin: 4px 0;
+}
+
+.category-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: black;
+    padding-top: 6px;
+}
+
+.category-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.category-chip:has(input:checked) {
+    background: #e5e7eb;
+    border-color: #666;
+}
+
+.category-chip input {
+    margin: 0;
+}
