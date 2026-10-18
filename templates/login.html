@@ -22,14 +22,14 @@
   {% endif %}
   <form action="/login" method="post">
     <p>
-      Username: <br />
-      <input type="text" name="username" />
+      Username: <br>
+      <input type="text" name="username" value="{{ username }}">
     </p>
     <p>
       Password: <br />
-      <input type="password" name="password" />
+      <input type="password" name="password">
     </p>
-    <input type="submit" value="Sign in" />
+    <input type="submit" value="Sign in">
   </form>
   {% endif %}
 </body>

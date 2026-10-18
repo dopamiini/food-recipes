@@ -1,9 +1,14 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 import db
 
-def get_user(user_id):
+def get_user_id(user_id):
     sql = "SELECT id, username FROM users WHERE id = ?"
     res = db.query(sql, [user_id])
+    return res[0] if res else None
+
+def get_user_username(username):
+    sql = "SELECT id, username FROM users WHERE username = ?"
+    res = db.query(sql, [username])
     return res[0] if res else None
 
 def get_recipes(user_id):

@@ -5,3 +5,33 @@
 .success {
     color: black;
 }
+
+nav {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+nav p {
+    display: inline;
+    margin: 1em 0;
+}
+
+.logout-form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.link-button {
+    display: inline;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #0000ee;
+    text-decoration: underline;
+    font: inherit;
+    cursor: pointer;
+}

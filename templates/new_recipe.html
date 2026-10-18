@@ -19,19 +19,19 @@
   <form action="/create_recipe" method="post">
     <p>
       Name: <br>
-      <input type="text" name="title" maxlength="50" size="50">
+      <input type="text" name="title" maxlength="50" size="50" value="{{ title }}">
     </p>
     <p>
       Description: <br>
-      <textarea name="description" rows="8" cols="80" maxlength="1000"></textarea>
+      <textarea name="description" rows="8" cols="80" maxlength="1000">{{ description }}</textarea>
     </p>
     <p>
       Ingredients: <br>
-      <textarea name="ingredients" rows="4" cols="80" maxlength="1000"></textarea>
+      <textarea name="ingredients" rows="4" cols="80" maxlength="1000">{{ ingredients }}</textarea>
     </p>
     <p>
       Instructions: <br>
-      <textarea name="instructions" rows="8" cols="80" maxlength="1000"></textarea>
+      <textarea name="instructions" rows="8" cols="80" maxlength="1000">{{ instructions }}</textarea>
     </p>
     {% for group in categories %}
     <p>
@@ -39,7 +39,10 @@
       <select name="categories">
         <option value="">Choose a category</option>
       {% for option in categories[group] %}
-        <option value="{{ group }}:{{ option }}">{{ option }}</option>
+        <option value="{{ group }}:{{ option }}"
+          {% if group ~ ':' ~ option in selected_categories %}selected{% endif %}>
+          {{ option }}
+        </option>
       {% endfor %}
       </select>
     </p>

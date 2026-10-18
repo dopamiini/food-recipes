@@ -10,6 +10,9 @@
   <h1>Recepio</h1>
   <p><a href="/">Back</a></p>
   <hr>
+  {% if message %}
+    <p id="message" class="{{ message_type }}">{{ message }}</p>
+  {% endif %}
   <h2>Edit recipe</h2>
   <form action="/update_recipe" method="post">
     <p>

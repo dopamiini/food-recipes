@@ -8,29 +8,42 @@
 
 <body>
   <h1><span>R</span>ecepio</h1>
-  <p>
+  <nav>
+    <p>
+      {% if session.username %}
+        Logged in as {{ session.username }} |
+        <a href="/new_recipe">Add recipe</a> |
+      {% else %}
+        <a href="/login">Sign in</a> |
+        <a href="/register">Register</a> |
+      {% endif %}
+      <a href="/find_recipe">Find recipe</a>
+      {% if session.username %}
+        |
+      {% endif %}
+    </p>
+
     {% if session.username %}
-      Logged in as {{ session.username }} |
-      <a href="/new_recipe">Add recipe</a> |
-    {% else %}
-      <a href="/login">Sign in</a> |
-      <a href="/register">Register</a> |
+      <form action="/logout" method="POST" class="logout-form">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <button type="submit" class="link-button">Logout</button>
+      </form>
     {% endif %}
-    <a href="/find_recipe">Find recipe</a>
-    {% if session.username %}
-      <a href="/logout"> | Logout</a>
-    {% endif %}
-  </p>
+  </nav>
   <hr>
   {% if message %}
     <p id="message" class="{{ message_type }}">{{ message }}</p>
   {% endif %}
   <h2>Recipes</h2>
-  <ul>
+  {% if recipes %}
+    <ul>
     {% for recipe in recipes %}
-    <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
+      <li><a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></li>
     {% endfor %}
-  </ul>
+    </ul>
+  {% else %}
+    <p>No recipes found.</p>
+  {% endif %}
 </body>
 
 </html>
