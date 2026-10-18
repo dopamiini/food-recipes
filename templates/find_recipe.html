@@ -54,9 +54,7 @@
 
   </form>
 
-  {% if query or selected_categories %}
-    <h2>Results ({{ result_count }})</h2>
-
+  <h2>Results ({{ result_count }})</h2>
     {% if results %}
       <ul>
         {% for recipe in results %}
@@ -70,7 +68,6 @@
     {% else %}
       <p>No recipes found matching your selections.</p>
     {% endif %}
-  {% endif %}
 
 </body>
 

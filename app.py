@@ -124,36 +124,13 @@ def index():
         recipes=all_recipes,
     )
 
-"""
-@app.route("/find_recipe")
-def find_recipe():
-    query = request.args.get("query")
-
-    if query:
-        results = recipes.find_recipes(query)
-    else:
-        query = ""
-        results = []
-
-    result_count = len(results)
-
-    return render_template(
-        "find_recipe.html",
-        query=query,
-        results=results,
-        result_count=result_count,
-    )
-"""
-
 
 @app.route("/find_recipe")
 def find_recipe():
     query = request.args.get("query", "").strip()
     categories = recipes.get_all_categories()
 
-    selected_values = list(dict.fromkeys(
-        request.args.getlist("category")
-    ))
+    selected_values = list(dict.fromkeys(request.args.getlist("category")))
 
     selected_categories = []
 
@@ -170,15 +147,13 @@ def find_recipe():
 
         selected_categories.append((category, value))
 
-    if selected_categories:
-        results = recipes.find_recipes_by_categories(
-            selected_categories, query
-        )
-    elif query:
-        results = recipes.find_recipes(query)
+    if not query:
+        results = recipes.get_recipes()
+    elif selected_categories:
+        results = recipes.find_recipes_by_categories(selected_categories, query)
     else:
-        results = []
-
+        results = recipes.find_recipes(query)
+        
     return render_template(
         "find_recipe.html",
         query=query,
@@ -262,15 +237,6 @@ def login():
         session["message_type"] = "error"
         session["login_username"] = username
         return redirect("/login")
-
-"""
-@app.route("/logout")
-def logout():
-    if "user_id" in session:
-        del session["user_id"]
-        del session["username"]
-    return redirect("/")
-    """
 
 
 @app.route("/logout", methods=["POST"])
