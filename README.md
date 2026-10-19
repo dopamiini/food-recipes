@@ -1,6 +1,6 @@
 # Food Recipes (Recepio)
 
-Recepio is a web application that allows users to publish their food recipes. You can browse, share, and manage food recipes. Registered users can create, edit, and remove recipes, and upload an image of the recipe. They can also rate and and comment on recipes. All users can view all recipes. Navigating and using the app should be intuitive.
+Recepio is a web application that allows users to publish their food recipes. All users can browse and search all recipes. Only registered users can create recipes and manage them. Registered users can also rate any recipe once and add comments to any recipes. Navigating and using the app should be intuitive. All recipes have ingredients and instructions listed, as well as meal type and dietary information listed. There is also the option to add a photo of your dish to your recipe.
 
 ## Running the Application
 
