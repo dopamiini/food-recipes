@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ### 3. Initialize the database
 
-This command creates the database using the `schema.sql` file.
+This command creates the database using the `schema.sql` and `init.sql` files.
 
 **Linux and macOS:**
 
