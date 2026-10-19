@@ -44,7 +44,7 @@ python3 init_db.py
 **Windows:** Use `python` instead of `python3`.
 
 ```powershell
-python init_db.py
+python seed.py
 ```
 
 ### 4. Start the application
