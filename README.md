@@ -69,11 +69,7 @@ The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:50
 
 ## Data Entities
 
-The primary entity is a **recipe**, and the secondary entity is a **comment** associated with a recipe.
-
-## Comments
-
-Note that the requirements may be updated during the project, but none of the mandatory basic requirements will be removed. Current working idea for the app name is Recepio. A rough first sketch of the app can be found [here](images/food-recipes.png).
+The primary entity is a **recipe**, and the secondary entities are **comments** and **ratings** associated with a recipe.
 
 ## Testing
 
