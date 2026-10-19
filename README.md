@@ -38,7 +38,7 @@ This command creates the database using the `schema.sql` file.
 **Linux and macOS:**
 
 ```bash
-python3 init_db.py
+python3 seed.py
 ```
 
 **Windows:** Use `python` instead of `python3`.
