@@ -1,4 +1,5 @@
 # Food Recipes (Recepio)
+[![Pylint](https://github.com/dopamiini/food-recipes/actions/workflows/pylint.yml/badge.svg)](https://github.com/YOUR-USERNAME/YOUR-REPOSITORY/actions/workflows/pylint.yml)
 
 Recepio is a web application that allows users to publish their food recipes. All users can browse and search all recipes. Only registered users can create recipes and manage them. Registered users can also rate any recipe once and add comments to any recipes. All recipes have ingredients and instructions listed, as well as meal type and dietary information listed. There is also the option to add a photo of your dish to your recipe. Navigating and using the app should be intuitive.
 
