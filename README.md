@@ -41,7 +41,7 @@ This command creates the database using the `schema.sql` and `init.sql` files.
 python3 seed.py
 ```
 
-Windows users use `python` instead of `python3`.
+Windows users use `python` instead of `python3`. You can always reset the database by rerunning the command.
 
 ### 4. Start the application
 
