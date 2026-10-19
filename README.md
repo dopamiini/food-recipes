@@ -41,11 +41,7 @@ This command creates the database using the `schema.sql` and `init.sql` files.
 python3 seed.py
 ```
 
-**Windows:** Use `python` instead of `python3`.
-
-```powershell
-python seed.py
-```
+Windows users use `python` instead of `python3`.
 
 ### 4. Start the application
 
