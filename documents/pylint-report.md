@@ -8,7 +8,7 @@
 
 **Status:** All checks passed with a perfect score.
 
-Pylint was run for all pyton project files. See [pylint-report.txt](pylint-report.txt) for details.
+Pylint was run for all python project files. See [pylint-report.txt](pylint-report.txt) for details.
 
 ## Installing and Running Pylint
 Pylint is a Python code analysis tool.
