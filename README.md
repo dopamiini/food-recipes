@@ -72,6 +72,22 @@ The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:50
 
 The primary entity is a **recipe**, and the secondary entities are **comments** and **ratings** associated with a recipe.
 
+## Security
+
+The project tries to address the following security concerns:
+
+* Authentication: Verifies login credentials.
+
+* Input validation: Validates form inputs before processing or storing them.
+
+* Authorization: Ensures users can only modify or delete data they have permission to access.
+
+* SQL injection: Uses parameterized SQL queries to prevent SQL injection.
+
+* Cross-site scripting (XSS): Escapes user-generated content to prevent malicious HTML or JavaScript from executing.
+
+* Cross-site request forgery (CSRF): Uses CSRF tokens to protect form submissions.
+
 ## Testing
 
 Testing documentation and test cases can be found in the file [testing.md](documents/testing.md).
