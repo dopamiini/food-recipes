@@ -169,7 +169,7 @@
       <form action="/create_comment" method="POST" class="recipe-form">
         <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <textarea id="comment" name="comment" rows="4" maxlength="200" required></textarea>
+        <textarea id="comment" name="comment" rows="4" maxlength="200"></textarea>
         <button type="submit">Add comment</button>
       </form>
     {% else %}

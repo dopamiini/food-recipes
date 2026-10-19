@@ -576,7 +576,7 @@ def create_comment():
     if not comment:
         session["message"] = "Comments cannot be empty."
         session["message_type"] = "error"
-        return redirect("/recipe/" + recipe_id)
+        return redirect("/recipe/" + str(recipe_id))
 
     if len(comment) > 200:
         session["message"] = "Comments must be at most 200 characters."
