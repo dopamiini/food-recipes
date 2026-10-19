@@ -10,7 +10,7 @@ import recipes
 import users
 
 app = Flask(__name__)
-app.SECRET_KEY = config.SECRET_KEY
+app.secret_key = config.SECRET_KEY
 
 MAX_IMAGE_SIZE = 5 * 1024 * 1024
 
