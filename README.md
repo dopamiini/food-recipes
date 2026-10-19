@@ -56,7 +56,7 @@ The application will be available at [http://127.0.0.1:5000](http://127.0.0.1:50
 * All users can view all recipes listed on the app.
 * All users can search for recipes using keywords and optionally filter recipes by category.
 * Users can register an account and then login using that account.
-* Registered user can add, edit and remove their own recipes. All recipe fields are mandatory, and adding pictures are optional.
+* Registered user can add, edit and remove their own recipes. All recipe fields are mandatory, and adding pictures are optional (only png format is supported).
 * The app has a user page that shows information about the user and their added recipes.
   * It shows the number of recipes the user has added.
   * It lists all the recipes the user has added.
