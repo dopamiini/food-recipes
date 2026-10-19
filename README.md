@@ -4,7 +4,7 @@ Recepio is a web application that allows users to publish their food recipes. Yo
 
 ## Running the Application
 
-You need Python version 3.10 or later.
+You need Python version 3.10 and Flask version 3.1.x or later.
 
 ### 1. Clone the repository and navigate to the project directory
 
