@@ -1,3 +1,4 @@
+"""This module resets the database."""
 import os
 import sqlite3
 

@@ -1,26 +1,36 @@
+"""Database helpers for user management and authentication."""
 from werkzeug.security import check_password_hash, generate_password_hash
 import db
 
 def get_user_id(user_id):
+    """Helper function for user profile page. Fetches id ad username."""
     sql = "SELECT id, username FROM users WHERE id = ?"
     res = db.query(sql, [user_id])
     return res[0] if res else None
 
+
 def get_user_username(username):
+    """Helper function to check if registered user exists."""
     sql = "SELECT id, username FROM users WHERE username = ?"
     res = db.query(sql, [username])
     return res[0] if res else None
 
+
 def get_recipes(user_id):
+    """Helper function to display recipe information for given user."""
     sql = "SELECT id, title FROM recipes WHERE user_id = ? ORDER BY id DESC"
     return db.query(sql, [user_id])
 
+
 def create_user(username, password):
+    """Tries to create a username with given password."""
     password_hash = generate_password_hash(password)
     sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
     db.execute(sql, [username, password_hash])
 
+
 def check_login(username, password):
+    """Checks if login credentials are valid. Used to validate user for /login."""
     sql = "SELECT id, password_hash FROM users WHERE username = ?"
     res = db.query(sql, [username])
 

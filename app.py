@@ -1,27 +1,33 @@
+"""Main module for the Flask recipe application."""
+import secrets
 import sqlite3
-from flask import Flask, abort, redirect, render_template, request, session
 from datetime import datetime
+
+from flask import Flask, abort, redirect, render_template, request, session
+
 import config
-import db, recipes, secrets, users
+import recipes
+import users
 
 app = Flask(__name__)
-app.secret_key = config.secret_key
-
+app.SECRET_KEY = config.SECRET_KEY
 
 MAX_IMAGE_SIZE = 5 * 1024 * 1024
 
-
 def require_login():
+    """Checks user is logged in before allowing access a route."""
     if "user_id" not in session:
         abort(403)
 
 
 def check_csrf():
+    """Checks form submission has matching security token with the user's session."""
     if request.form.get("csrf_token") != session.get("csrf_token"):
         abort(403)
 
 
 def get_flash_messages():
+    """Flash messages stored in session for error and confirmation messages."""
     message = session.pop("message", None)
     message_type = session.pop("message_type", None)
 
@@ -29,6 +35,7 @@ def get_flash_messages():
 
 
 def is_valid_png(data):
+    """Basic check if data appears to be valid PNG image and within size limit."""
     if not data or len(data) > MAX_IMAGE_SIZE:
         return False
 
@@ -38,34 +45,26 @@ def is_valid_png(data):
     return True
 
 
-def validate_recipe_form():
-    title = request.form.get("title", "").strip()
-    description = request.form.get("description", "").strip()
-    ingredients = request.form.get("ingredients", "").strip()
-    instructions = request.form.get("instructions", "").strip()
+def validate_recipe_fields(title, description, ingredients, instructions):
+    """Validate required recipe fields and their maximum lengths."""
+    fields = [
+        (title, "Recipe title", 50),
+        (description, "Recipe description", 80),
+        (ingredients, "Ingredients", 500),
+        (instructions, "Recipe instructions", 500),
+    ]
 
-    all_categories = recipes.get_all_categories()
-    selected_categories = request.form.getlist("categories")
+    for value, label, max_length in fields:
+        if not value:
+            return f"{label} is required."
+        if len(value) > max_length:
+            return f"{label} must be at most {max_length} characters."
 
-    message = None
+    return None
 
-    if not title:
-        message = "Recipe title is required."
-    elif len(title) > 50:
-        message = "Recipe title must be at most 50 characters."
-    elif not description:
-        message = "Recipe description is required."
-    elif len(description) > 80:
-        message = "Recipe description must be at most 80 characters."
-    elif not ingredients:
-        message = "Ingredients are required."
-    elif len(ingredients) > 500:
-        message = "Ingredients must be at most 500 characters."
-    elif not instructions:
-        message = "Recipe instructions are required."
-    elif len(instructions) > 500:
-        message = "Instructions must be at most 500 characters."
 
+def validate_recipe_categories(selected_categories, all_categories):
+    """Validate and return selected recipe categories."""
     categories = []
 
     for entry in selected_categories:
@@ -87,11 +86,40 @@ def validate_recipe_form():
 
         categories.append((category, value))
 
+    return categories
+
+
+def validate_required_categories(all_categories, categories):
+    """Check every category group has a selection."""
+    selected_groups = {category for category, value in categories}
+
+    for group in all_categories:
+        if group not in selected_groups:
+            return f"Please select an option for {group}."
+
+    return None
+
+
+def validate_recipe_form():
+    """Validate form entries for new recipe."""
+    title = request.form.get("title", "").strip()
+    description = request.form.get("description", "").strip()
+    ingredients = request.form.get("ingredients", "").strip()
+    instructions = request.form.get("instructions", "").strip()
+
+    all_categories = recipes.get_all_categories()
+    selected_categories = request.form.getlist("categories")
+
+    message = validate_recipe_fields(
+        title, description, ingredients, instructions
+    )
+
+    categories = validate_recipe_categories(
+        selected_categories, all_categories
+    )
+
     if not message:
-        for group in all_categories:
-            if not any(category == group for category, value in categories):
-                message = "Please select an option for " + group + "."
-                break
+        message = validate_required_categories(all_categories, categories)
 
     return {
         "title": title,
@@ -107,16 +135,18 @@ def validate_recipe_form():
 
 @app.template_filter("eu_datetime")
 def eu_datetime(value):
+    """Display time format in EU standard."""
     dt = datetime.strptime(value, "%Y-%m-%d %H:%M")
     return dt.strftime("%d.%m.%Y %H:%M")
 
 
 @app.route("/")
 def index():
+    """Display the main page."""
     message, message_type = get_flash_messages()
 
     all_recipes = recipes.get_recipes_with_images()
-    
+
     return render_template(
         "index.html",
         message=message,
@@ -127,6 +157,7 @@ def index():
 
 @app.route("/find_recipe")
 def find_recipe():
+    """Search page for recipes by search term or categories."""
     query = request.args.get("query", "").strip()
 
     if len(query) > 80:
@@ -170,6 +201,7 @@ def find_recipe():
 
 @app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
+    """Processes information needed to display a single recipe page."""
     recipe = recipes.get_recipe(recipe_id)
 
     if not recipe:
@@ -208,6 +240,7 @@ def show_recipe(recipe_id):
 
 @app.route("/recipe/<int:recipe_id>/comments")
 def show_recipe_comments(recipe_id):
+    """Displays comments for a recipe."""
     recipe = recipes.get_recipe(recipe_id)
 
     if not recipe:
@@ -224,6 +257,7 @@ def show_recipe_comments(recipe_id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Displays and processes the login form for the application."""
     if request.method == "GET":
         message, message_type = get_flash_messages()
         username = session.pop("login_username", "")
@@ -234,33 +268,34 @@ def login():
             message_type=message_type,
             username=username,
         )
-    else:
-        username = request.form["username"].strip()
-        password = request.form["password"]
 
-        if not username or not password:
-            session["message"] = "Username and password are required."
-            session["message_type"] = "error"
-            session["login_username"] = username
-            return redirect("/login")
+    username = request.form["username"].strip()
+    password = request.form["password"]
 
-        user = users.check_login(username, password)
-
-        if user:
-            session.pop("login_username", None)
-            session["user_id"] = user["id"]
-            session["username"] = username
-            session["csrf_token"] = secrets.token_hex(16)
-            return redirect("/")
-
-        session["message"] = "Incorrect username or password!"
+    if not username or not password:
+        session["message"] = "Username and password are required."
         session["message_type"] = "error"
         session["login_username"] = username
         return redirect("/login")
 
+    user = users.check_login(username, password)
+
+    if user:
+        session.pop("login_username", None)
+        session["user_id"] = user["id"]
+        session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
+        return redirect("/")
+
+    session["message"] = "Incorrect username or password!"
+    session["message_type"] = "error"
+    session["login_username"] = username
+    return redirect("/login")
+
 
 @app.route("/logout", methods=["POST"])
 def logout():
+    """Logs out user and clears their login session information."""
     require_login()
     check_csrf()
 
@@ -272,6 +307,7 @@ def logout():
 
 @app.route("/register")
 def register():
+    """Displays the registration page."""
     message, message_type = get_flash_messages()
     username = session.pop("register_username", "")
 
@@ -285,6 +321,7 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
+    """Processes the registered information and handles account creation."""
     username = request.form["username"].strip()
     password1 = request.form["password1"]
     password2 = request.form["password2"]
@@ -292,7 +329,7 @@ def create():
     if not username:
         message = "Username is required."
         session.pop("register_username", None)
-    
+
     elif users.get_user_username(username):
         message = "Username already exists!"
 
@@ -331,6 +368,7 @@ def create():
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
+    """Displays user's profile page passing it to a template."""
     user = users.get_user_id(user_id)
 
     if not user:
@@ -339,7 +377,6 @@ def show_user(user_id):
     latest_recipe = recipes.get_latest_recipe(user_id)
     user_recipes = users.get_recipes(user_id)
 
-    #recipes = users.get_recipes(user_id)
     return render_template(
         "show_user.html",
         user=user,
@@ -350,6 +387,7 @@ def show_user(user_id):
 
 @app.route("/new_recipe")
 def new_recipe():
+    """Displays form for creating a new recipe."""
     require_login()
 
     categories = recipes.get_all_categories()
@@ -371,6 +409,7 @@ def new_recipe():
 
 @app.route("/create_recipe", methods=["POST"])
 def create_recipe():
+    """Handles submitting and creating a new recipe with new_recipe()."""
     require_login()
     check_csrf()
 
@@ -393,10 +432,7 @@ def create_recipe():
 
     recipes.add_recipe(
         user_id,
-        form["title"],
-        form["description"],
-        form["ingredients"],
-        form["instructions"],
+        form,
         form["categories"],
     )
 
@@ -409,6 +445,7 @@ def create_recipe():
 
 @app.route("/edit_recipe/<int:recipe_id>")
 def edit_recipe(recipe_id):
+    """Lets user edit a recipe. It checks the user is logged in and the owner."""
     require_login()
 
     recipe = recipes.get_recipe(recipe_id)
@@ -436,6 +473,7 @@ def edit_recipe(recipe_id):
 
 @app.route("/update_recipe", methods=["POST"])
 def update_recipe():
+    """Updates recipe on form submission. Checks user logged in and verifies the submission.""" 
     require_login()
     check_csrf()
 
@@ -479,14 +517,7 @@ def update_recipe():
             message_type="error",
         )
 
-    recipes.update_recipe(
-        recipe_id,
-        form["title"],
-        form["description"],
-        form["ingredients"],
-        form["instructions"],
-        form["categories"],
-    )
+    recipes.update_recipe(recipe_id, form)
 
     session["message"] = "Recipe updated successfully!"
     session["message_type"] = "success"
@@ -496,6 +527,7 @@ def update_recipe():
 
 @app.route("/remove_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def remove_recipe(recipe_id):
+    """Removes recipe. Validates and verifies user, then displays a delete confirmation page."""
     require_login()
 
     recipe = recipes.get_recipe(recipe_id)
@@ -518,12 +550,13 @@ def remove_recipe(recipe_id):
         if "remove" in request.form:
             recipes.remove_recipe(recipe_id)
             return redirect("/")
-        else:
-            return redirect("/recipe/" + str(recipe_id))
+
+    return redirect("/recipe/" + str(recipe_id))
 
 
 @app.route("/create_comment", methods=["POST"])
 def create_comment():
+    """Creates a recipe comment. Verifies and validates user and the form submission."""
     require_login()
     check_csrf()
 
@@ -557,6 +590,7 @@ def create_comment():
 
 @app.route("/edit_comment/<int:comment_id>", methods=["GET", "POST"])
 def edit_comment(comment_id):
+    """Handles editing a comment. Checks user is logged in and verifies they own it."""
     require_login()
 
     comment = recipes.get_comment_by_id(comment_id)
@@ -573,34 +607,34 @@ def edit_comment(comment_id):
             comment=comment,
         )
 
-    if request.method == "POST":
-        check_csrf()
+    check_csrf()
 
-        new_comment = request.form.get("comment", "").strip()
+    new_comment = request.form.get("comment", "").strip()
 
-        if not new_comment:
-            session["message"] = "Comment cannot be empty."
-            session["message_type"] = "error"
-            return render_template(
-                "edit_comment.html",
-                comment=comment,
-                comment_text=new_comment,
-            )
-
-        recipes.update_comment(
-            comment["id"],
-            session["user_id"],
-            new_comment,
+    if not new_comment:
+        session["message"] = "Comment cannot be empty."
+        session["message_type"] = "error"
+        return render_template(
+            "edit_comment.html",
+            comment=comment,
+            comment_text=new_comment,
         )
 
-        session["message"] = "Comment updated successfully!"
-        session["message_type"] = "success"
+    recipes.update_comment(
+        comment["id"],
+        session["user_id"],
+        new_comment,
+    )
 
-        return redirect("/recipe/" + str(comment["recipe_id"]))
+    session["message"] = "Comment updated successfully!"
+    session["message_type"] = "success"
+
+    return redirect("/recipe/" + str(comment["recipe_id"]))
 
 
 @app.route("/remove_comment/<int:comment_id>", methods=["GET", "POST"])
 def remove_comment(comment_id):
+    """Handles comment removal. Checks user logged in, verifies ownership, and asks confirmation."""
     require_login()
 
     comment = recipes.get_comment_by_id(comment_id)
@@ -617,20 +651,20 @@ def remove_comment(comment_id):
             comment=comment,
         )
 
-    if request.method == "POST":
-        check_csrf()
+    check_csrf()
 
-        if "remove" in request.form:
-            recipes.remove_comment(comment_id, session["user_id"])
-            print("Redirecting to:", "/recipe/" + str(comment["recipe_id"]))
-            return redirect("/recipe/" + str(comment["recipe_id"]))
-        else:
-            print("Redirecting to:", "/recipe/" + str(comment["recipe_id"]))
-            return redirect("/recipe/" + str(comment["recipe_id"]))
+    if "remove" in request.form:
+        recipes.remove_comment(comment_id, session["user_id"])
+        print("Redirecting to:", "/recipe/" + str(comment["recipe_id"]))
+        return redirect("/recipe/" + str(comment["recipe_id"]))
+
+    print("Redirecting to:", "/recipe/" + str(comment["recipe_id"]))
+    return redirect("/recipe/" + str(comment["recipe_id"]))
 
 
 @app.route("/create_rating", methods=["POST"])
 def create_rating():
+    """Handles rating submission for a recipe. Checks user is logged in and verifies submission."""
     require_login()
     check_csrf()
 
@@ -648,7 +682,7 @@ def create_rating():
         session["message"] = "Rating is required."
         session["message_type"] = "error"
         return redirect("/recipe/" + str(recipe_id))
-    
+
     if not 1 <= rating <= 5:
         abort(400)
 
@@ -665,6 +699,7 @@ def create_rating():
 
 @app.route("/edit_rating", methods=["POST"])
 def edit_rating():
+    """Handles editing recipe rating. Checks user is logged in and verifies rating ownership."""
     require_login()
     check_csrf()
 
@@ -677,7 +712,7 @@ def edit_rating():
     existing_rating = recipes.get_rating_by_id(rating_id)
 
     if not existing_rating:
-            abort(404)
+        abort(404)
 
     user_id = session["user_id"]
 
@@ -701,6 +736,7 @@ def edit_rating():
 
 @app.route("/remove_rating", methods=["POST"])
 def remove_rating():
+    """Removes recipe rating. Checks user is logged in, verifies ownership, and removes it."""
     require_login()
     check_csrf()
 
@@ -728,6 +764,7 @@ def remove_rating():
 
 @app.route("/upload_image/<int:recipe_id>", methods=["POST"])
 def upload_image(recipe_id):
+    """Checks user can upload image to specific recipe and if image file has been chosen."""
     require_login()
     check_csrf()
 
@@ -762,6 +799,7 @@ def upload_image(recipe_id):
 
 @app.route("/remove_image/<int:recipe_id>", methods=["GET", "POST"])
 def remove_image(recipe_id):
+    """Handles removing an image from a specific recipe if the user owns the recipe."""
     require_login()
 
     recipe = recipes.get_recipe(recipe_id)
@@ -788,6 +826,7 @@ def remove_image(recipe_id):
 
 @app.route("/recipe_image/<int:recipe_id>")
 def recipe_image(recipe_id):
+    """Displays image linked to a specific recipe."""
     image = recipes.get_image(recipe_id)
 
     if image is None:
